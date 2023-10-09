@@ -1,9 +1,9 @@
 import greenfoot.*;
 
-public class Jogador1 extends AcoesJogadores
+public class Jogador2 extends AcoesJogadores
 {      
-    public Jogador1() {
-        super("A", "D", "W", "V", "R");
+    public Jogador2() {
+        super("left", "right", "up", "P", "L");
         imagemPersonagem();
     }
     
