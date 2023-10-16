@@ -6,8 +6,5 @@ comment2.params=
 comment2.target=void\ act()
 comment3.params=
 comment3.target=void\ prepare()
-comment4.params=
-comment4.target=void\ invocarInimigos()
-comment5.params=
-comment5.target=void\ chamarChefe()
-numComments=6
+comment3.text=\r\n\ \ \ \ private\ void\ invocarInimigos(BarraFlex\ barraVida)\ {\r\n\ \ \ \ \ \ \ \ if\ (Greenfoot.getRandomNumber(180)\ \=\=\ 0)\ {\r\n\ \ \ \ \ \ \ \ \ \ \ \ Inimigo1\ inimigo1\ \=\ new\ Inimigo1();\r\n\ \ \ \ \ \ \ \ \ \ \ \ int\ posX\ \=\ Greenfoot.getRandomNumber(getWidth());\r\n\ \ \ \ \ \ \ \ \ \ \ \ int\ posY\ \=\ Greenfoot.getRandomNumber(getHeight()\ /\ 2);\r\n\ \ \ \ \ \ \ \ \ \ \ \ addObject(inimigo1,\ posX,\ posY);\r\n\ \ \ \ \ \ \ \ \ \ \ \ totalInimigosInvocados++;\r\n\ \ \ \ \ \ \ \ }\r\n\ \ \ \ }\r\n
+numComments=4

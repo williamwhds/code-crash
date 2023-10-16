@@ -6,7 +6,7 @@ import java.util.List;
 public class myWorld {
     public boolean Scrolling = false;
 
-    public List<AcoesJogadores> jogadoresAtivos;
+    public List<Jogador> jogadoresAtivos;
 
     private Jogador1 Personagem1;
     private Jogador2 Personagem2;

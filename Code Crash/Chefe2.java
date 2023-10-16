@@ -1,16 +1,16 @@
-import greenfoot.*;
-import java.util.List;
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-public class RabulGenius extends Chefe {
+public class Chefe2 extends Chefe
+{
     
-    private static int vida = 500;
+    private static int vida = 1000;
     private static int forcaDano = 2;
     private int velocidadeX = 10;
     private int qntInimigosADerrotar = 2;
     private int tempo = 600;
     private int chancesInvocarInimigos = 4;
     
-    public RabulGenius() {
+    public Chefe2() {
         super(vida, forcaDano);
         
         definirVelocidade(velocidadeX);
@@ -18,7 +18,8 @@ public class RabulGenius extends Chefe {
         controlarInvocacao(qntInimigosADerrotar, chancesInvocarInimigos);
     }
     
-    public void act() {
+    public void act()
+    {
         super.act();
     }
 }

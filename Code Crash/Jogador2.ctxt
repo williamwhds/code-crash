@@ -1,9 +1,11 @@
 #BlueJ class context
 comment0.target=Jogador2
-comment1.params=
-comment1.target=Jogador2()
+comment1.params=coracao
+comment1.target=Jogador2(Coracao)
 comment2.params=
-comment2.target=void\ imagemPersonagem()
+comment2.target=void\ imagemJogadorDireita()
 comment3.params=
-comment3.target=void\ act()
-numComments=4
+comment3.target=void\ imagemJogadorEsquerda()
+comment4.params=
+comment4.target=void\ act()
+numComments=5

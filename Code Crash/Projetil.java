@@ -21,8 +21,8 @@ public class Projetil extends Actor {
             if (distanciaPercorrida >= distanciaMaxima) {
                 removerDoMundo();
             } else {
-                InimigosDinamicos inimigo = (InimigosDinamicos) getOneIntersectingObject(InimigosDinamicos.class);
-                ChefeFinal chefe = (ChefeFinal) getOneIntersectingObject(ChefeFinal.class);
+                Inimigo inimigo = (Inimigo) getOneIntersectingObject(Inimigo.class);
+                Chefe chefe = (Chefe) getOneIntersectingObject(Chefe.class);
                 move((int) velocidade);
                 
                 if (inimigo != null && getWorld()!=null) {

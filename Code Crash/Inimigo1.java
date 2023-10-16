@@ -1,25 +1,16 @@
 import greenfoot.*;
 
-public class Inimigo1 extends InimigosDinamicos
+public class Inimigo1 extends Inimigo
 {   
-    private double velocidadeY = 0;
+    private int velocidadeX = 2;
     
     public Inimigo1() {
-        super(20, 1, 3);
+        super(20, 1);
+        
+        definirVelocidade(velocidadeX);
     }
-
+    
     public void act() {
-        /*
-        if (!removidoDoMundo) {
-            super.act();
-            if (!estaNoChao()) {
-                velocidadeY += 0.5;
-            } else {
-                velocidadeY = 0;
-            }
-            setLocation(getX(), getY() + (int) velocidadeY);
-        }
-        */
        if (!removidoDoMundo) {
            super.act();
        }

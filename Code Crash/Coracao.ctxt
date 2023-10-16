@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=Coracao
+comment1.params=
+comment1.target=Coracao()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=CodeCrash\ dano
+comment3.target=void\ atualizarVida(greenfoot.World,\ int)
+comment4.params=vida
+comment4.target=void\ definirVida(int)
+numComments=5
