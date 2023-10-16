@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.target=RabulGenius
+comment1.params=barraVida
+comment1.target=RabulGenius(BarraFlex)
+comment1.text=\r\n\ \ \ \ private\ int\ vida\ \=\ 500;\r\n\ \ \ \ private\ int\ velocidadeX\ \=\ 10;\r\n\ \ \ \ private\ int\ forcaDano\ \=\ 2;\r\n\ \ \ \ private\ int\ qntInimigosADerrotar\ \=\ 2;\r\n\ \ \ \ private\ int\ tempo\ \=\ 600;\r\n\ \ \ \ private\ int\ chancesInvocarInimigos\ \=\ 4;\r\n
+comment2.params=
+comment2.target=void\ act()
+numComments=3

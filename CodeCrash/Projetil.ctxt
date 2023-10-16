@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Projetil
+comment1.params=velocidade\ distanciaMaxima\ dano
+comment1.target=Projetil(double,\ int,\ int)
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ removerDoMundo()
+numComments=4
