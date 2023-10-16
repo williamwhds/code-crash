@@ -53,25 +53,19 @@ public class Inimigo extends Actor {
     
     public void atacarJogadores() {
         Jogador jogador = procurarJogadorMaisProximo();
-        
-        if (!ativarEspera) {
-            if (jogador != null) {
-                int distanciaX = jogador.getX() - getX();
-                int distanciaY = jogador.getY() - getY();
-            
-                if (distanciaX == (jogador.getX() - 5) && distanciaY == jogador.getY()) {
-                    jogador.receberAtaque(forca);
-                    ativarEspera(); 
-                } else {
-                    if (jogador.getX() > getX()) {
-                         moverDireita();
-                    } else if (jogador.getX() < getX()) {
-                        moverEsquerda();
-                    }
-                    
-                    if (jogador.getY() < getY() && jogador.getX() == getX()) {
-                        pulos();
-                    }
+
+        if (!ativarEspera && jogador != null) {
+            int distanciaX = Math.abs(jogador.getX() - getX());
+            int distanciaY = Math.abs(jogador.getY() - getY());
+    
+            if (distanciaX <= 20 && distanciaY <= 20) {
+                jogador.receberAtaque(forca);
+                ativarEspera();
+            } else {
+                if (jogador.getX() > getX()) {
+                    moverDireita();
+                } else if (jogador.getX() < getX()) {
+                    moverEsquerda();
                 }
             }
         }
@@ -94,6 +88,16 @@ public class Inimigo extends Actor {
         }
     }
     
+    /*
+     * Movimento da barra de vida
+     */
+    public void moverBarra() {
+        barraVida.setLocation(getX(), getY()-70);
+    }
+    
+    /*
+     * Movimentos do Inimigo
+     */
     public void moverDireita() {
         move(velocidadeX);
     }
@@ -102,8 +106,12 @@ public class Inimigo extends Actor {
         move(-velocidadeX);
     }
     
-    public void moverBarra() {
-        barraVida.setLocation(getX(), getY()-70);
+    public void moverCima() {
+        setLocation(getX(), getY()-velocidadeX);
+    }
+    
+    public void moverBaixo() {
+        setLocation(getX(), getY()+velocidadeX);
     }
     
     public void pulos() {
@@ -170,7 +178,7 @@ public class Inimigo extends Actor {
         } else {
             return Double.MAX_VALUE;
         }
-    }
+    } 
     
     public void gravidade() 
     {

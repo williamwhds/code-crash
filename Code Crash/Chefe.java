@@ -1,62 +1,67 @@
 import greenfoot.*;
 import java.util.List;
 
-public class Chefe extends Actor
-{
+public class Chefe extends Actor {
     private int vida;
     private int largura = 1000;
     private int altura = 30;
     private Color corVermelha = Color.RED;
-    
+
     private int velocidadeX;
     private int causarDano;
-    
+
     private int valorTempo;
-    private int esperar = valorTempo;
-    
+    private int tempoDeEspera;
+
     private int distanciaBordaX = 130;
     private int invocacoes = 0;
-    private int qnt; // Conta a quantidade de inimigos eu desejo derrotar para executar algo.
+    private int qnt;
     private int qntChancesInvocarInimigos;
 
     private boolean ladoEsquerdo = false;
     private boolean navegando = false;
     
+    private int contadorDeAtraso = 0;
+
     private BarraFlex barraVida;
-    
-    public Chefe(int vida, int causarDano) {
+    private Inimigo drone;
+
+    public Chefe(int vida, int causarDano, int valorTempo) {
         this.vida = vida;
         this.causarDano = causarDano;
-        //this.barraVida = barraVida;
+        this.valorTempo = valorTempo;
     }
-    
+
     public void addedToWorld(World world) {
         barraVida = new BarraFlex(vida, vida, largura, altura, corVermelha);
-        getWorld().addObject(barraVida, 1220/2, 25);
+        getWorld().addObject(barraVida, getWorld().getWidth() / 2, 25);
     }
-    
+
     public void act() {
         acao();
         verificarColisoesComJogadores();
     }
-    
+
     public void controlarInvocacao(int qnt, int qntChancesInvocarInimigos) {
         this.qnt = qnt;
         this.qntChancesInvocarInimigos = qntChancesInvocarInimigos;
     }
 
     public void acao() {
-        if (esperar > 0) {
-            esperar--;
+        if (tempoDeEspera > 0) { // Se for > 0, significa que ele está parado
+            tempoDeEspera--;
             navegando = false;
-            if (invocacoes < qnt && Greenfoot.getRandomNumber(100) < qnt && !navegando) {
-                //invocarInimigo1();
+            
+            if (invocacoes < qnt) {
+                invocarInimigo();
+                invocacoes++;
             }
+            
         } else {
             invocacoes = 0;
         }
-        
-        if (esperar <= 0) {
+
+        if (tempoDeEspera <= 0) {
             navegando = true;
             if (ladoEsquerdo) {
                 moverParaDireita();
@@ -65,45 +70,38 @@ public class Chefe extends Actor
             }
         }
     }
-    
+
     public void dano(int dano) {
-        vida-=dano;
+        vida -= dano;
         barraVida.diminuirVida(dano);
-        
+
         System.out.println("Vida BOSS: " + vida);
         if (vida < 1) {
             getWorld().removeObject(barraVida);
             getWorld().removeObject(this);
         }
     }
-    /*
-    public void invocarInimigo1() {
-        BarraFlex barraVida = new BarraFlex(20, 20, 100, 10, Color.RED);
-        List<Inimigo1> inimigos = getWorld().getObjects(Inimigo1.class);
-        int quantidadeInimigos = inimigos.size();
+
+    public void invocarInimigo() {
         
-        if (quantidadeInimigos < qnt) {
-            Inimigo inimigo1 = new Inimigo1();
-            getWorld().addObject(inimigo1, getX(), getY());
-            invocacoes++;
-            }
-        }
-    */
+    }
+
     public void moverParaEsquerda() {
         if (getX() > distanciaBordaX) {
-            setLocation(getX() - velocidadeX, getY());
+            move(-velocidadeX);
         } else {
             ladoEsquerdo = true;
-            esperar = valorTempo;
+            tempoDeEspera = valorTempo;
+            //setRotation(180);
         }
     }
-    
+
     public void moverParaDireita() {
         if (getX() < (getWorld().getWidth()) - distanciaBordaX) {
-            setLocation(getX() + velocidadeX, getY());
+            move(velocidadeX);
         } else {
             ladoEsquerdo = false;
-            esperar = valorTempo;
+            tempoDeEspera = valorTempo;
         }
     }
 
@@ -119,18 +117,15 @@ public class Chefe extends Actor
             jogador2.receberAtaque(causarDano);
         }
     }
-    
-    /*
-     * Métodos Definir - Pegar
-     */
-    public int pegarVida(){
+
+    public int pegarVida() {
         return vida;
     }
-    
+
     public void definirVelocidade(int velocidadeX) {
         this.velocidadeX = velocidadeX;
     }
-    
+
     public void definirTempoDeEspera(int valorTempo) {
         this.valorTempo = valorTempo;
     }

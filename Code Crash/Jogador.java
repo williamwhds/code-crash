@@ -8,7 +8,10 @@ public class Jogador extends Actor
     private String teclaMoverEsquerda;
     private String teclaMoverDireita;
     private String teclaPular;
+    
     private String teclaAtirar;
+    private String teclaAtirarParaCima;
+    
     private String teclaRegarregar;
     
     /*
@@ -23,6 +26,8 @@ public class Jogador extends Actor
      */
     private boolean travarTecla = false;
     private boolean travarTeclaAtirar = false;
+    private boolean travarTeclaAtirarParaCima = false;
+
     
     /*
      * Mecânicas de disparos
@@ -69,6 +74,8 @@ public class Jogador extends Actor
      */
     private Plataforma plataforma;
     
+    GreenfootSound somDisparo = new GreenfootSound("Disparo.mp3");
+    
     /*
      * Define teclas do jogador
      */ 
@@ -76,13 +83,15 @@ public class Jogador extends Actor
         this.coracao = coracao;
     }
     
-    public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, 
-                                 String teclaPular, String teclaAtirar, String teclaRegarregar) {
+    public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, String teclaPular, 
+                                 String teclaAtirar, String teclaRegarregar, String teclaAtirarParaCima) 
+    {
                        
         this.teclaMoverEsquerda = teclaMoverEsquerda;
         this.teclaMoverDireita = teclaMoverDireita;
         this.teclaPular = teclaPular;
         this.teclaAtirar = teclaAtirar;
+        this.teclaAtirarParaCima = teclaAtirarParaCima;
         this.teclaRegarregar = teclaRegarregar;
     }
     
@@ -230,6 +239,7 @@ public class Jogador extends Actor
     public void atirar() {
         if (!recarregando) {
             if (municao > 0) {
+                somDisparo.play();
                 Projetil projetil;
                 int alcanceDoTiro = 900;
                 
@@ -249,6 +259,41 @@ public class Jogador extends Actor
             }
         } 
     }
+    
+    /*
+    public void atirarParaCima() {
+        if (!recarregando) {
+            if (municao > 0) {
+                Projetil projetil;
+                int alcanceDoTiro = 500; // Defina a altura máxima do tiro para atirar para cima.
+    
+                if (!movendo_Esquerda) {
+                    projetil = new Projetil(0, -alcanceDoTiro, danoTiro); // Ajuste o ângulo para atirar para cima.
+                    getWorld().addObject(projetil, getX(), getY());
+                } else {
+                    projetil = new Projetil(0, -alcanceDoTiro, danoTiro); // Ajuste o ângulo para atirar para cima.
+                    getWorld().addObject(projetil, getX(), getY());
+                }
+    
+                municao--;
+                travarTeclaAtirarParaCima = true;
+            } else {
+                recarregando = true;
+            }
+        }
+    }
+
+
+    public void controlarTiroParaCima() {
+        if (Greenfoot.isKeyDown(teclaAtirarParaCima) && !travarTeclaAtirarParaCima){
+            atirarParaCima();
+        }
+    
+        if (!Greenfoot.isKeyDown(teclaAtirarParaCima)) {
+            travarTeclaAtirarParaCima = false;
+        }
+    }
+    */
     
     public void tempoRecarga() {
         if (recarregando) {

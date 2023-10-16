@@ -14,6 +14,7 @@ public class DroneMaluco extends Inimigo
         if (!removidoDoMundo) {
            super.act();
            gravidade();
+           definirSubidaEDescida();
        }
         
        if (removidoDoMundo){
@@ -23,5 +24,17 @@ public class DroneMaluco extends Inimigo
     
     public void gravidade() {
         
+    }
+    
+    public void definirSubidaEDescida() {
+        Jogador jogador = procurarJogadorMaisProximo();
+        
+        if (jogador.getY() > getY()) {
+            moverBaixo();
+        } else if (jogador.getY() < getY()) {
+            moverCima();
+        } else {
+            
+        }
     }
 }

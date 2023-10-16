@@ -5,7 +5,7 @@ public class Jogador1 extends Jogador
     public Jogador1(Coracao coracao) {
         super(coracao);
         
-        configurarTeclas("A", "D", "W", "V", "R");
+        configurarTeclas("A", "D", "W", "V", "R", "C");
         imagemJogadorDireita();
         imagemJogadorEsquerda();
     }

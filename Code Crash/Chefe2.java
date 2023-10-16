@@ -5,21 +5,26 @@ public class Chefe2 extends Chefe
     
     private static int vida = 1000;
     private static int forcaDano = 2;
-    private int velocidadeX = 10;
-    private int qntInimigosADerrotar = 2;
-    private int tempo = 600;
-    private int chancesInvocarInimigos = 4;
+    private static int velocidadeX = 10;
+    private int qntInimigosADerrotar = 4;
+    private static int tempo = 600;
+    private int chancesInvocarInimigos = 6;
     
     public Chefe2() {
-        super(vida, forcaDano);
+        super(vida, forcaDano, tempo);
         
         definirVelocidade(velocidadeX);
-        definirTempoDeEspera(tempo);
+        //definirTempoDeEspera(tempo);
         controlarInvocacao(qntInimigosADerrotar, chancesInvocarInimigos);
     }
     
     public void act()
     {
         super.act();
+    }
+    
+    public void invocarInimigo() {
+        Inimigo espectro = new EspectroDoDesespero();
+        getWorld().addObject(espectro, getX(), getY());
     }
 }
