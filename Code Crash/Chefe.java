@@ -33,7 +33,7 @@ public class Chefe extends Actor {
     }
 
     public void addedToWorld(World world) {
-        barraVida = new BarraFlex(vida, vida, largura, altura, corVermelha);
+        barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
         getWorld().addObject(barraVida, getWorld().getWidth() / 2, 25);
     }
 
@@ -73,7 +73,7 @@ public class Chefe extends Actor {
 
     public void dano(int dano) {
         vida -= dano;
-        barraVida.diminuirVida(dano);
+        barraVida.diminuirValor(dano);
 
         System.out.println("Vida BOSS: " + vida);
         if (vida < 1) {

@@ -1,62 +1,48 @@
-import greenfoot.*;
+import greenfoot.*; 
 
-public class BarraFlex extends _Componentes
-{
-    private int vidaMaxima, vidaAtual;
-    private int larguraMaxima, altura;
-    private Color cor;
+public class BarraFlex extends _Componentes {
+    private int barraLargura, barraAltura, valorMax, valorAtual;
+    private Color corDaBarra;
     
-    //public BarraFlex() {
-    //    atualizarBarra();
-    //}
-    
-    public BarraFlex(int vidaMaxima, int vidaAtual, int largura, int altura, Color cor) {
-        this.vidaMaxima = vidaMaxima;
-        this.vidaAtual = vidaAtual;
-        this.larguraMaxima = largura;
-        this.altura = altura;
-        this.cor = cor;
-        atualizarBarra();
+    public BarraFlex(int largura, int altura, int max, int atual, Color cor) {
+        barraLargura = largura;
+        barraAltura = altura;
+        valorMax = max;
+        valorAtual = atual;
+        corDaBarra = cor;
+        atualizar();
+    }
+
+    public void atualizar() {
+        GreenfootImage img = new GreenfootImage(barraLargura + 2, barraAltura + 2);
+        img.setColor(Color.BLACK);
+        img.drawRect(0, 0, barraLargura + 1, barraAltura + 1);
+        img.setColor(corDaBarra);
+        int larguraDaBarra = (int)((double)valorAtual / valorMax * barraLargura);
+        img.fillRect(1, 1, larguraDaBarra, barraAltura);
+        setImage(img);
     }
     
-    public void act()
-    {
-        
+    public void setValor(int novoValor) {
+        if (novoValor < 0) novoValor = 0;
+        if (novoValor > valorMax) novoValor = valorMax;
+        valorAtual = novoValor;
+        atualizar();
+    }
+
+    public void aumentarValor(int quantidade) {
+        setValor(valorAtual + quantidade);
     }
     
-    public void diminuirVida(int dano) {
-        if (vidaAtual > 0) {
-            vidaAtual -= dano;
-            atualizarBarra();
-            if (vidaAtual < 0) {
-                vidaAtual = 0;
-            }
-        }
+    public void diminuirValor(int quantidade) {
+        setValor(valorAtual - quantidade);
     }
-    
-    public void aumentarVida(int cura) {
-        if (vidaAtual<vidaMaxima) {
-            vidaAtual += cura;
-            atualizarBarra();
-            
-            if (vidaAtual > vidaMaxima) {
-                vidaAtual = vidaMaxima;
-            }
-        }
+
+    public int getValor() {
+        return valorAtual;
     }
-    
-    public void atualizarBarra() {
-        if (vidaAtual != 0) {
-            int larguraAtual = (int)((double)vidaAtual / vidaMaxima * larguraMaxima); 
-            
-            GreenfootImage imagem = new GreenfootImage(larguraAtual, altura);
-            imagem.setColor(Color.RED);
-            imagem.fill();
-            setImage(imagem);
-        }
-    }
-    
-    public int pegarVida() {
-        return vidaAtual;
+
+    public int getValorMax() {
+        return valorMax;
     }
 }

@@ -38,7 +38,7 @@ public class Inimigo extends Actor {
      * Método que adiciona a barra de vida após a adicionar o Jogador no mundo
      */
     public void addedToWorld(World world) {
-        barraVida = new BarraFlex(vida, vida, largura, altura, corVermelha);
+        barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
         getWorld().addObject(barraVida, getX(), getY()-70);
     }
 
@@ -77,7 +77,7 @@ public class Inimigo extends Actor {
     
     public void dano(int dano) {
         vida-=dano;
-        barraVida.diminuirVida(dano);
+        barraVida.diminuirValor(dano);
         //System.out.println("Vida Inimigo: " + vida);
     }
     
