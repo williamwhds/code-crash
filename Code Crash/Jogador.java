@@ -77,6 +77,16 @@ public class Jogador extends Actor
     GreenfootSound somDisparo = new GreenfootSound("Disparo.mp3");
     
     /*
+     * Efeitos sonoros
+     */
+    public void tocarSomDisparo () {
+        if (somDisparo.isPlaying()) {
+            somDisparo.stop();
+        }
+        somDisparo.play();
+    }
+    
+    /*
      * Define teclas do jogador
      */ 
     public Jogador(Coracao coracao) {    
@@ -239,7 +249,7 @@ public class Jogador extends Actor
     public void atirar() {
         if (!recarregando) {
             if (municao > 0) {
-                somDisparo.play();
+                tocarSomDisparo();
                 Projetil projetil;
                 int alcanceDoTiro = 900;
                 
