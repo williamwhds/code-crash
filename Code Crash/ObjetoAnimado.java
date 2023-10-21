@@ -80,6 +80,6 @@ public class ObjetoAnimado extends Actor {
     }
     
     public void act() {
-        animar();
+        //animar();
     }
 }

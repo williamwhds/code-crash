@@ -6,16 +6,6 @@ public class Jogador2 extends Jogador
         super(coracao);
         
         configurarTeclas("left", "right", "up", "O", "L", "P");
-        imagemJogadorDireita();
-        imagemJogadorEsquerda();
-    }
-
-    public void imagemJogadorDireita() {
-        definirImgJogadorDireita("Player1Estatico_Frente.gif", "Player1Correndo_Frente.gif");
-    }
-    
-    public void imagemJogadorEsquerda() {
-        definirImgJogadorEsquerda("Player1Estatico_Tras.gif", "Player1Correndo_Tras.gif");
     }
     
      public void act() {

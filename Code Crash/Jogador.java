@@ -1,6 +1,6 @@
 import greenfoot.*;
 
-public class Jogador extends Actor
+public class Jogador extends ObjetoAnimado
 {
     /*
      * Teclas chaves dos movimentos do personagem
@@ -54,20 +54,13 @@ public class Jogador extends Actor
     Coracao coracao;
     
     /*
-     * Armazena o caminho dos gifs
+     * Armazena as animações
      */
-    private String caminhoJogadorParado_Direita;
-    private String caminhoJogadorParado_Esquerda;
-    private String caminhoJogadorCorrendo_Direita;
-    private String caminhoJogadorCorrendo_Esquerda;
+    private GreenfootImage[] animCorrendoDir;
+    private GreenfootImage[] animCorrendoEsq;
     
-    /*
-     * Declara o tipo dos atributos gif
-     */
-    GifImage gifJogadorParado_Direita;
-    GifImage gifJogadorParado_Esquerda;
-    GifImage gifJogadorCorrendo_Direita;
-    GifImage gifJogadorCorrendo_Esquerda;
+    private GreenfootImage[] animEstaticoDir;
+    private GreenfootImage[] animEstaticoEsq;
     
     /*
      * Outro
@@ -75,6 +68,17 @@ public class Jogador extends Actor
     private Plataforma plataforma;
     
     GreenfootSound somDisparo = new GreenfootSound("Disparo.mp3");
+    
+    /*
+     * Métodos herdados
+     */
+    public void animar() {
+        super.animar();
+    }
+    
+    public void setAnimacaoAtual(GreenfootImage[] anim) {
+        super.setAnimacaoAtual(anim);
+    }
     
     /*
      * Efeitos sonoros
@@ -91,6 +95,13 @@ public class Jogador extends Actor
      */ 
     public Jogador(Coracao coracao) {    
         this.coracao = coracao;
+        
+        // Gerando animações
+        animCorrendoDir = super.gerarAnimacao("player1_correndo", 14);
+        animCorrendoEsq = super.espelharAnimacao(animCorrendoDir);
+        
+        animEstaticoDir = super.gerarAnimacao("player1_estatico", 4);
+        animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
     }
     
     public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, String teclaPular, 
@@ -112,25 +123,7 @@ public class Jogador extends Actor
         gravidade();
         controlarTiros();
         gerenciarImunidade();
-    }
-    
-    /*
-     * Define a imagem do personagem
-     */
-    public void definirImgJogadorDireita(String chaveParadoDireita, String chaveCorrendoDireita) {
-        this.caminhoJogadorParado_Direita = chaveParadoDireita;
-        this.caminhoJogadorCorrendo_Direita = chaveCorrendoDireita;
-        
-        gifJogadorParado_Direita = new GifImage(chaveParadoDireita);
-        gifJogadorCorrendo_Direita = new GifImage(chaveCorrendoDireita);   
-    }
-    
-    public void definirImgJogadorEsquerda(String chaveParadoEsquerda, String chaveCorrendoEsquerda) {
-        this.caminhoJogadorParado_Esquerda = chaveParadoEsquerda;
-        this.caminhoJogadorCorrendo_Esquerda = chaveCorrendoEsquerda;
-        
-        gifJogadorParado_Esquerda = new GifImage(chaveParadoEsquerda);
-        gifJogadorCorrendo_Esquerda = new GifImage(chaveCorrendoEsquerda); 
+        animar();
     }
     
     /*
@@ -152,22 +145,22 @@ public class Jogador extends Actor
     }
     
     public void moverEsquerda() {
-        setImage(gifJogadorCorrendo_Esquerda.getCurrentImage());
+        setAnimacaoAtual(animCorrendoEsq);
         velocidadeX = -5;
         movendo_Esquerda = true;
     }
     
     public void moverDireita() {
-        setImage(gifJogadorCorrendo_Direita.getCurrentImage());
+        setAnimacaoAtual(animCorrendoDir);
         velocidadeX = 5;
         movendo_Esquerda = false;
     }
     
     public void parado() {
         if (movendo_Esquerda) {
-                setImage(gifJogadorParado_Esquerda.getCurrentImage());
+                setAnimacaoAtual(animEstaticoEsq);
             } else {
-                setImage(gifJogadorParado_Direita.getCurrentImage());
+                setAnimacaoAtual(animEstaticoDir);
             }
             velocidadeX = 0;
     }
