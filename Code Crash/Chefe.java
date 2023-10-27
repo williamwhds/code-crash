@@ -1,7 +1,7 @@
 import greenfoot.*;
 import java.util.List;
 
-public class Chefe extends Actor {
+public class Chefe extends ObjetoAnimado {
     private int vida;
     private int largura = 1000;
     private int altura = 30;
