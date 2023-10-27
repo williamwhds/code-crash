@@ -1,15 +1,11 @@
 import greenfoot.*;
 
-public class Jogador2 extends AcoesJogadores
+public class Jogador2 extends Jogador
 {      
-    public Jogador2() {
-        super("left", "right", "up", "P", "L");
-        imagemPersonagem();
-    }
-    
-    public void imagemPersonagem() {
-        definirImagemDoPersonagem("Player1Estatico_Frente.gif", "Player1Estatico_Tras.gif", 
-                              "Player1Correndo_Frente.gif", "Player1Correndo_Tras.gif");
+    public Jogador2(Coracao coracao) {
+        super(coracao);
+        
+        configurarTeclas("left", "right", "up", "O", "L", "P");
     }
     
      public void act() {

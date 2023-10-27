@@ -1,18 +1,19 @@
 import greenfoot.*;
 
-public class Projetil extends Actor {
+public class Projetil extends ObjetoAnimado {
     private double velocidade;
     private int distanciaPercorrida;
     private int distanciaMaxima;
     private int dano;
     
-    GifImage gifPoder = new GifImage("Player1Poder.gif");
+    private GreenfootImage[] animPoder;
 
-    public Projetil(double velocidade, int distanciaMaxima, int dano) {
+    public Projetil(double velocidade, int distanciaMaxima, int dano, GreenfootImage[] animacao) {
         this.velocidade = velocidade;
         this.distanciaMaxima = distanciaMaxima;
         this.dano = dano;
-        setImage(gifPoder.getCurrentImage());
+        this.animPoder = animacao;
+        setAnimacaoAtual(animPoder);
     }
 
     public void act() {
@@ -21,8 +22,8 @@ public class Projetil extends Actor {
             if (distanciaPercorrida >= distanciaMaxima) {
                 removerDoMundo();
             } else {
-                InimigosDinamicos inimigo = (InimigosDinamicos) getOneIntersectingObject(InimigosDinamicos.class);
-                ChefeFinal chefe = (ChefeFinal) getOneIntersectingObject(ChefeFinal.class);
+                Inimigo inimigo = (Inimigo) getOneIntersectingObject(Inimigo.class);
+                Chefe chefe = (Chefe) getOneIntersectingObject(Chefe.class);
                 move((int) velocidade);
                 
                 if (inimigo != null && getWorld()!=null) {
@@ -34,6 +35,7 @@ public class Projetil extends Actor {
                     removerDoMundo();
                 }
             }
+            super.animar();
         } else {
             removerDoMundo();
         }
