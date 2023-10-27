@@ -62,6 +62,7 @@ public class Jogador extends ObjetoAnimado
     private GreenfootImage[] animEstaticoDir;
     private GreenfootImage[] animEstaticoEsq;
     
+    private GreenfootImage[] animProjetil;
     /*
      * Outro
      */
@@ -78,6 +79,10 @@ public class Jogador extends ObjetoAnimado
     
     public void setAnimacaoAtual(GreenfootImage[] anim) {
         super.setAnimacaoAtual(anim);
+    }
+    
+    public void setTempoEntreFrames (int tempo) {
+        super.setTempoEntreFrames(tempo);
     }
     
     /*
@@ -102,6 +107,8 @@ public class Jogador extends ObjetoAnimado
         
         animEstaticoDir = super.gerarAnimacao("player1_estatico", 4);
         animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
+        
+        animProjetil = super.gerarAnimacao("escudo", 6);
     }
     
     public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, String teclaPular, 
@@ -146,12 +153,16 @@ public class Jogador extends ObjetoAnimado
     
     public void moverEsquerda() {
         setAnimacaoAtual(animCorrendoEsq);
+        setTempoEntreFrames(5);
+        
         velocidadeX = -5;
         movendo_Esquerda = true;
     }
     
     public void moverDireita() {
         setAnimacaoAtual(animCorrendoDir);
+        setTempoEntreFrames(5);
+        
         velocidadeX = 5;
         movendo_Esquerda = false;
     }
@@ -159,8 +170,10 @@ public class Jogador extends ObjetoAnimado
     public void parado() {
         if (movendo_Esquerda) {
                 setAnimacaoAtual(animEstaticoEsq);
+                setTempoEntreFrames(7);
             } else {
                 setAnimacaoAtual(animEstaticoDir);
+                setTempoEntreFrames(7);
             }
             velocidadeX = 0;
     }
@@ -247,10 +260,10 @@ public class Jogador extends ObjetoAnimado
                 int alcanceDoTiro = 900;
                 
                 if (!movendo_Esquerda) {
-                    projetil = new Projetil(20, alcanceDoTiro, danoTiro);
+                    projetil = new Projetil(20, alcanceDoTiro, danoTiro, animProjetil);
                     getWorld().addObject(projetil, getX()+30, getY()+30);
                 } else {
-                    projetil = new Projetil(-20, alcanceDoTiro, danoTiro);
+                    projetil = new Projetil(-20, alcanceDoTiro, danoTiro, animProjetil);
                     getWorld().addObject(projetil, getX()-30, getY()+30);
                 }
         

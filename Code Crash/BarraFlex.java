@@ -1,6 +1,6 @@
 import greenfoot.*; 
 
-public class BarraFlex extends _Componentes {
+public class BarraFlex extends Actor {
     private int barraLargura, barraAltura, valorMax, valorAtual;
     private Color corDaBarra;
     

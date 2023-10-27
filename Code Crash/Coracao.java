@@ -1,31 +1,23 @@
 import greenfoot.*;
 
-public class Coracao extends _Componentes
+public class Coracao extends ObjetoAnimado
 {
-    //private GreenfootImage[] images = new GreenfootImage[11];
-    private String caminhoGif;
-    
-    GifImage gifVidaCompleta;
-    GifImage gifCoracao;
-    
+    private String caminhoAnim;
+    private GreenfootImage[] animCoracao;
     private int vidaAtual = 10;
-    
-    public Coracao() {
-        gifVidaCompleta = new GifImage("Coracao10.gif");
-    }
     
     public void act()
     {
-        
+        super.animar();
     }
     
     public void atualizarVida(World CodeCrash, int dano) {
         int valorVida = vidaAtual - dano;
         
-        caminhoGif = ("Coracao"+valorVida+".gif");
-        gifCoracao = new GifImage(caminhoGif);
+        caminhoAnim = ("coracao"+valorVida+"_");
+        animCoracao = super.gerarAnimacao(caminhoAnim, 7);
         
-        setImage(gifCoracao.getCurrentImage());
+        super.setAnimacaoAtual(animCoracao);
         definirVida(vidaAtual-dano);
     }
     
