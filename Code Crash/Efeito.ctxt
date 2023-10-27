@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Efeito
+comment1.params=
+comment1.target=void\ remover()
+comment2.params=anim
+comment2.target=void\ setAnimacaoAtual(greenfoot.GreenfootImage[])
+comment3.params=
+comment3.target=void\ animar()
+comment4.params=
+comment4.target=boolean\ animacaoTerminou()
+comment5.params=
+comment5.target=void\ act()
+numComments=6
