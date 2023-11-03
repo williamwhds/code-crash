@@ -63,6 +63,7 @@ public class Jogador extends ObjetoAnimado
     private GreenfootImage[] animEstaticoEsq;
     
     private GreenfootImage[] animProjetil;
+    private GreenfootImage[] animPulando;
     /*
      * Outro
      */
@@ -109,6 +110,7 @@ public class Jogador extends ObjetoAnimado
         animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
         
         animProjetil = super.gerarAnimacao("escudo", 6);
+        animPulando = super.gerarAnimacao("player1_pulando", 6, 1);
     }
     
     public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, String teclaPular, 
@@ -195,7 +197,7 @@ public class Jogador extends ObjetoAnimado
         if (estaPulando) {
             int newY = getY() + (int) velocidadeY; 
             velocidadeY += 0.5;
-            
+            setAnimacaoAtual(animPulando);
             if (newY >= getWorld().getHeight() - getImage().getHeight() / 2) {
                 velocidadeY = 0;
                 estaPulando = false;

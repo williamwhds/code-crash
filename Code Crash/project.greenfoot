@@ -6,6 +6,7 @@ class.DroneMaluco.image=DroneVivo.gif
 class.EfeitoExplosao.image=explosao0.png
 class.EspectroDoDesespero.image=EspectroAndando.gif
 class.Inimigo1.image=Mini_Inimigo1.png
+class.Jogador1.image=player1_estatico0.png
 class.Jogador2.image=Player1Estatico_Tras.gif
 class.Plataforma.image=ChaoDePedra.png
 class.Projetil.image=escudo0.png
