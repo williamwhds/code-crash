@@ -8,11 +8,7 @@ public class Jogador extends ObjetoAnimado
     private String teclaMoverEsquerda;
     private String teclaMoverDireita;
     private String teclaPular;
-    
     private String teclaAtirar;
-    private String teclaAtirarParaCima;
-    
-    private String teclaRegarregar;
     
     /*
      * Mecânicas de movimentos
@@ -32,9 +28,16 @@ public class Jogador extends ObjetoAnimado
     /*
      * Mecânicas de disparos
      */
-    private int municao = 15;
+    protected int municao = 15;
     private int danoTiro = 5;
     private int tempoRecargaAtual = 180;
+    
+    /*
+     * Configuração Barra de Recarga
+     */
+    int largura = 100;
+    int altura = 10;
+    BarraFlex barraRecarga;
     
     /*
      * Mecânica de verificação
@@ -46,12 +49,17 @@ public class Jogador extends ObjetoAnimado
     private boolean recarregando = false;
     
     /*
-     * Vida e Imunidade
+     * Vida
      */
+    Coracao coracao;
     private int vida = 10;
+    private boolean estaVivo = true;
+    
+    /*
+     * Imunidade
+     */
     private boolean estaImune = false;
     private int tempoImunidade = 120;
-    Coracao coracao;
     
     /*
      * Armazena as animações
@@ -63,16 +71,59 @@ public class Jogador extends ObjetoAnimado
     private GreenfootImage[] animEstaticoEsq;
     
     private GreenfootImage[] animProjetil;
-    private GreenfootImage[] animPulando;
+    
+    
     /*
-     * Outro
+     * Som
      */
-    private Plataforma plataforma;
-    
     GreenfootSound somDisparo = new GreenfootSound("Disparo.mp3");
+    GreenfootSound somRecarregando = new GreenfootSound("Recarregando.mp3");
+    
+    public void act() { 
+        controlarTiros();
+        tempoRecarga();
+        movimentos();
+        pulos();
+        gravidade();
+        gerenciarImunidade();
+        animar();
+        moverBarra();
+        
+        if (vida==0) {
+            tirarDoMundo();
+            encerrarSons();
+        }
+        
+    }
     
     /*
-     * Métodos herdados
+     * Define teclas do jogador
+     */ 
+    public Jogador() {    
+        // Gerando animações
+        animCorrendoDir = super.gerarAnimacao("player1_correndo", 14);
+        animCorrendoEsq = super.espelharAnimacao(animCorrendoDir);
+        
+        animEstaticoDir = super.gerarAnimacao("player1_estatico", 4);
+        animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
+        
+        animProjetil = super.gerarAnimacao("escudo", 6);
+    }
+    
+    public void addedToWorld(World world, int alturaCoracao) {
+        world.addObject(barraRecarga, getX(), getY()-70);
+        world.addObject(coracao, 100, alturaCoracao);
+    }
+    
+    /*
+     * Barra de recarga
+     */
+    public void moverBarra() {
+        barraRecarga.setLocation(getX(), getY()-70);
+    }
+    
+    /*
+     * Métodos de Animação herdados
      */
     public void animar() {
         super.animar();
@@ -96,43 +147,28 @@ public class Jogador extends ObjetoAnimado
         somDisparo.play();
     }
     
+    public void encerrarSons() {
+        somDisparo.stop();
+        somRecarregando.stop();
+    }
+    
     /*
-     * Define teclas do jogador
-     */ 
-    public Jogador(Coracao coracao) {    
-        this.coracao = coracao;
-        
-        // Gerando animações
-        animCorrendoDir = super.gerarAnimacao("player1_correndo", 14);
-        animCorrendoEsq = super.espelharAnimacao(animCorrendoDir);
-        
-        animEstaticoDir = super.gerarAnimacao("player1_estatico", 4);
-        animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
-        
-        animProjetil = super.gerarAnimacao("escudo", 6);
-        animPulando = super.gerarAnimacao("player1_pulando", 6, 1);
-    }
-    
-    public void configurarTeclas(String teclaMoverEsquerda, String teclaMoverDireita, String teclaPular, 
-                                 String teclaAtirar, String teclaRegarregar, String teclaAtirarParaCima) 
-    {
-                       
+     * Configuração de Teclas
+     */
+    public void configTeclaEsquerda (String teclaMoverEsquerda) {
         this.teclaMoverEsquerda = teclaMoverEsquerda;
-        this.teclaMoverDireita = teclaMoverDireita;
-        this.teclaPular = teclaPular;
-        this.teclaAtirar = teclaAtirar;
-        this.teclaAtirarParaCima = teclaAtirarParaCima;
-        this.teclaRegarregar = teclaRegarregar;
     }
     
-    public void act() {
-        tempoRecarga();
-        movimentos();
-        pulos();
-        gravidade();
-        controlarTiros();
-        gerenciarImunidade();
-        animar();
+    public void configTeclaDireita (String teclaMoverDireita) {
+        this.teclaMoverDireita = teclaMoverDireita;
+    }
+    
+    public void configTeclaPular (String teclaPular) {
+        this.teclaPular = teclaPular;
+    }
+    
+    public void configTeclaAtirar (String teclaAtirar) {
+        this.teclaAtirar = teclaAtirar;
     }
     
     /*
@@ -153,6 +189,9 @@ public class Jogador extends ObjetoAnimado
         setLocation(getX() + (int) velocidadeX, getY());
     }
     
+    /*
+     * Controle da Animação
+     */
     public void moverEsquerda() {
         setAnimacaoAtual(animCorrendoEsq);
         setTempoEntreFrames(5);
@@ -197,7 +236,7 @@ public class Jogador extends ObjetoAnimado
         if (estaPulando) {
             int newY = getY() + (int) velocidadeY; 
             velocidadeY += 0.5;
-            setAnimacaoAtual(animPulando);
+            
             if (newY >= getWorld().getHeight() - getImage().getHeight() / 2) {
                 velocidadeY = 0;
                 estaPulando = false;
@@ -252,6 +291,10 @@ public class Jogador extends ObjetoAnimado
         if (!Greenfoot.isKeyDown(teclaAtirar)) {
             travarTeclaAtirar = false;
         }
+        
+        if (municao <= 0) {
+            recarregando = true;
+        }
     }
         
     public void atirar() {
@@ -268,92 +311,77 @@ public class Jogador extends ObjetoAnimado
                     projetil = new Projetil(-20, alcanceDoTiro, danoTiro, animProjetil);
                     getWorld().addObject(projetil, getX()-30, getY()+30);
                 }
-        
-                //projetil.setRotation(getRotation());
+                
                 municao--;
+                barraRecarga.diminuirValor(1);
                 travarTeclaAtirar = true;
-            } else {
-                recarregando = true;
             }
         } 
     }
     
-    /*
-    public void atirarParaCima() {
-        if (!recarregando) {
-            if (municao > 0) {
-                Projetil projetil;
-                int alcanceDoTiro = 500; // Defina a altura máxima do tiro para atirar para cima.
-    
-                if (!movendo_Esquerda) {
-                    projetil = new Projetil(0, -alcanceDoTiro, danoTiro); // Ajuste o ângulo para atirar para cima.
-                    getWorld().addObject(projetil, getX(), getY());
-                } else {
-                    projetil = new Projetil(0, -alcanceDoTiro, danoTiro); // Ajuste o ângulo para atirar para cima.
-                    getWorld().addObject(projetil, getX(), getY());
-                }
-    
-                municao--;
-                travarTeclaAtirarParaCima = true;
-            } else {
-                recarregando = true;
-            }
-        }
-    }
-
-
-    public void controlarTiroParaCima() {
-        if (Greenfoot.isKeyDown(teclaAtirarParaCima) && !travarTeclaAtirarParaCima){
-            atirarParaCima();
-        }
-    
-        if (!Greenfoot.isKeyDown(teclaAtirarParaCima)) {
-            travarTeclaAtirarParaCima = false;
-        }
-    }
-    */
-    
     public void tempoRecarga() {
         if (recarregando) {
             if (tempoRecargaAtual > 0) {
+                barraRecarga.setCor(Color.GRAY);
                 tempoRecargaAtual--;
+                
+                if ((tempoRecargaAtual % 12) == 0) {
+                    somRecarregando.play();
+                    municao++;
+                    barraRecarga.setValor(municao);
+                }
             }
             
-            if (municao == 0 && recarregando && tempoRecargaAtual <= 0) {
-                recarregando();
+            if (tempoRecargaAtual <= 0) {
+                recarregando = false;
+                tempoRecargaAtual = 180;
+                somRecarregando.stop();
             }
         }
-        
-        if ((Greenfoot.isKeyDown(teclaRegarregar) && municao<15) && municao!=0) {
-            recarregando();
-        }
-    }
-    
-    public void recarregando() {
-        municao = 15;
-        recarregando = false;
-        tempoRecargaAtual = 180;
     }
     
     /*
      * Receber dano dos inimigos
      */
     public void receberAtaque(int dano) {
-        if (!estaImune && verificaVida()) {
+        if (!estaImune && estaVivo) {
             vida-=dano;
+            
+            if (vida < 0 ) {
+                vida = 0;
+            }
+            
             tornarImune();
             receberAtaque = true;
-            
-            coracao.atualizarVida(getWorld(), dano);
+            coracao.atualizarVida(vida);
         }
-        //System.out.println(vida); // Imprime Vida
+    }
+    
+    public void tirarDoMundo(){
+        getWorld().removeObject(barraRecarga);
+        getWorld().removeObject(this);
+        morrer();
     }
     
     /*
-     * Verifica a vida do personagem
+     * Verifica estado do personagem
      */
-    public boolean verificaVida() {
+    public void viver() {
+        estaVivo = true;
+    }
+    
+    public void morrer() {
+        estaVivo = false;
+    }
+    
+    public boolean estaVivo() {
         return vida > 0;
+    }
+    
+    public void redefinirVida() {
+        vida = 10;
+        coracao.atualizarVida(vida);
+        viver();
     }
     
     /*
@@ -371,12 +399,5 @@ public class Jogador extends ObjetoAnimado
     public void tornarImune() {
         estaImune = true;
         tempoImunidade = 180;
-    }
-    
-    public boolean noChao() {
-        if (isTouching(Plataforma.class)) {
-            return true;
-        }
-        return false;
     }
 }

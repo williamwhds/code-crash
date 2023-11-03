@@ -4,30 +4,28 @@ import java.util.List;
 public class Inimigo extends ObjetoAnimado {
     
     /*
-     * Configurar vida e Barra de vida
+     * Configurar Barra de Vida
      */
     private int vida;
     private int largura = 100;
     private int altura = 10;
+    private BarraFlex barraVida;
     private Color corVermelha = Color.RED;
     
     /*
-     * 
+     * Velocidade e Aceleração
      */
     private int forca;
     private int velocidadeX;
     private int velocidadeY;
     private int aceleracao = 1;
+    private int FORCA_PULO = -30;
     
     private int tempoDeEspera = 60;
     
     protected boolean removidoDoMundo = false;
     private boolean ativarEspera = false;
     //protected boolean noChao = false;
-    
-    private static final int FORCA_PULO = -30;
-    
-    private BarraFlex barraVida;
 
     public Inimigo(int vida, int forca) {
         this.vida = vida;
@@ -35,7 +33,7 @@ public class Inimigo extends ObjetoAnimado {
     }
     
     /*
-     * Método que adiciona a barra de vida após a adicionar o Jogador no mundo
+     * Método que adiciona a barra de vida após adicionar o Jogador no mundo
      */
     public void addedToWorld(World world) {
         barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
@@ -78,7 +76,6 @@ public class Inimigo extends ObjetoAnimado {
     public void dano(int dano) {
         vida-=dano;
         barraVida.diminuirValor(dano);
-        //System.out.println("Vida Inimigo: " + vida);
     }
     
     public void removerDoMundo() {
@@ -159,7 +156,7 @@ public class Inimigo extends ObjetoAnimado {
             
             for (Jogador jogador : jogadores) {
                 double distancia = pegarDistanciaParaJogador(jogador);
-                if (distancia < menorDistancia) {
+                if (jogador.estaVivo() && (distancia < menorDistancia)) {
                     menorDistancia = distancia;
                     jogadorMaisProximo = jogador;
                 }
@@ -170,15 +167,24 @@ public class Inimigo extends ObjetoAnimado {
     }
     
     public double pegarDistanciaParaJogador(Jogador jogador) {
-
-       if (jogador != null) {
+        if (jogador != null) {
             int jogadorX = jogador.getX();
             int jogadorY = jogador.getY();
-            return (getX() - jogadorX) + (getY() - jogadorY);
+            int inimigoX = getX();
+            int inimigoY = getY();
+    
+            int deltaX = jogadorX - inimigoX;
+            int deltaY = jogadorY - inimigoY;
+    
+            // Usar o teorema de Pitágoras para calcular a distância
+            double distancia = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+            return distancia;
         } else {
             return Double.MAX_VALUE;
         }
-    } 
+    }
+ 
     
     public void gravidade() 
     {

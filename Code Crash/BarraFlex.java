@@ -2,22 +2,25 @@ import greenfoot.*;
 
 public class BarraFlex extends Actor {
     private int barraLargura, barraAltura, valorMax, valorAtual;
-    private Color corDaBarra;
+    
+    private Color corDaBarraOriginal;
+    private Color corDaBarraTemp;
     
     public BarraFlex(int largura, int altura, int max, int atual, Color cor) {
         barraLargura = largura;
         barraAltura = altura;
         valorMax = max;
         valorAtual = atual;
-        corDaBarra = cor;
+        corDaBarraOriginal = cor;
+        corDaBarraTemp = corDaBarraOriginal;
         atualizar();
     }
 
     public void atualizar() {
         GreenfootImage img = new GreenfootImage(barraLargura + 2, barraAltura + 2);
-        img.setColor(Color.BLACK);
+        img.setColor(corDaBarraOriginal);
         img.drawRect(0, 0, barraLargura + 1, barraAltura + 1);
-        img.setColor(corDaBarra);
+        img.setColor(corDaBarraTemp);
         int larguraDaBarra = (int)((double)valorAtual / valorMax * barraLargura);
         img.fillRect(1, 1, larguraDaBarra, barraAltura);
         setImage(img);
@@ -25,7 +28,11 @@ public class BarraFlex extends Actor {
     
     public void setValor(int novoValor) {
         if (novoValor < 0) novoValor = 0;
-        if (novoValor > valorMax) novoValor = valorMax;
+        
+        if (novoValor >= valorMax) {
+            novoValor = valorMax;  
+            corDaBarraTemp = corDaBarraOriginal;
+        }
         valorAtual = novoValor;
         atualizar();
     }
@@ -44,5 +51,9 @@ public class BarraFlex extends Actor {
 
     public int getValorMax() {
         return valorMax;
+    }
+    
+    public void setCor(Color cor) {
+        corDaBarraTemp = cor;
     }
 }

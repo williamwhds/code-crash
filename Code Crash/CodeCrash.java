@@ -2,34 +2,42 @@ import greenfoot.*;
 import java.util.List;
 
 public class CodeCrash extends World {
-    private GreenfootSound musicaDeFundo = musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
-    
     /*
      * Declarando os Jogadores 
-     */
+     */ 
+    Jogador jogador1 = new Jogador1();
+    Jogador jogador2 = new Jogador2();
     
-    Coracao coracao1 = new Coracao();
-    Coracao coracao2 = new Coracao();
-        
-    Jogador jogador1 = new Jogador1(coracao1);
-    Jogador jogador2 = new Jogador2(coracao2);
+    /*
+     * Configurações dos Inimigos
+     */
+    List<Inimigo1> inimigos;
+    private int totalInimigosInvocados = 0;
+    private boolean invocandoInimigos = true;
+    private int numDeInimigosInvocados = 0;
+    
+    /*
+     * Configurações dos Chefes
+     */
+    private int totalChefesInvocados = 0;
+    boolean chefeInvocado = false;
+    
+    /*
+     * Configuração das fases 
+     */
+    private int faseAtual = 3;
     
     GreenfootImage fundoFase1 = new GreenfootImage("Back01.png");
     GreenfootImage fundoFase2 = new GreenfootImage("Back03.png");
     
-    private int faseAtual = 2;
+    /*
+     * Configuração do Som
+     */
+    private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
     
-    private int totalInimigosInvocados = 0;
-    private boolean invocandoInimigos = true;
     
+    // Corrigir
     private boolean estaEsquerda = false;
-    
-    private int totalChefesInvocados = 0;
-    private int numDeInimigosInvocados = 0;
-    
-    List<Inimigo1> inimigos;
-    
-    boolean chefeInvocado = false;
     private int tempoDeEspera = 0;
     
     public CodeCrash() {
@@ -48,17 +56,19 @@ public class CodeCrash extends World {
     }
     
     public void configurarJogadores() {
-        // Adiciona Corações dos Jogadores
-        addObject(coracao1, 100, 100);
-        addObject(coracao2, 1220-100, 100);
-        // Adiciona Jogadores
-        addObject(jogador1, 348, 535);
-        addObject(jogador2, 165, 535);
+        if (jogador1.estaVivo()) {
+            addObject(jogador1, 348, 535);
+        }
+        if (jogador2.estaVivo()) {
+            addObject(jogador2, 165, 535);
+        }
     }
     
     public void passarFase() {
         faseAtual++;
-        System.out.println("Passei para a fase: " + faseAtual);
+        
+        jogador1.redefinirVida();
+        jogador2.redefinirVida();
     }
     
     public void fase() {
@@ -68,6 +78,9 @@ public class CodeCrash extends World {
                 break;
             case 2:
                 prepararFase2();
+                break;
+            case 3:
+                prepararFase3();
                 break;
             default:
                 break;
@@ -181,6 +194,16 @@ public class CodeCrash extends World {
             fase();
         }
     }
-
+    int spawn = 0;
+    public void prepararFase3() {
+        setBackground(fundoFase1);
+        configurarJogadores();
+        
+        if (spawn == 0) {
+            spawn=1;
+            Chefe chefe3 = new Chefe2();
+            addObject(chefe3, getWidth(), getHeight()-100);
+        }
+    }
 
 }
