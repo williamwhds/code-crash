@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=ObjetoAnimado
+comment1.params=nomeImagem\ nImagens
+comment1.target=greenfoot.GreenfootImage[]\ gerarAnimacao(java.lang.String,\ int)
+comment2.params=nomeImagem\ nImagens\ escala
+comment2.target=greenfoot.GreenfootImage[]\ gerarAnimacao(java.lang.String,\ int,\ int)
+comment3.params=
+comment3.target=void\ animar()
+comment3.text=\r\n\ \ \ \ \ \ \ \ O\ m\u00E9todo\ animar()\ foi\ desenvolvido\ com\ informa\u00E7\u00F5es\ retiradas\ do\r\n\ \ \ \ \ \ \ \ f\u00F3rum\ do\ Greenfoot\ e\ adaptado\ com\ aux\u00EDlio\ de\ IA\ (ChatGPT-3.5).\r\n\ \ \ \ \ \ \ \ \r\n\ \ \ \ \ \ \ \ https\://www.greenfoot.org/topics/64544/0\r\n
+comment4.params=
+comment4.target=greenfoot.GreenfootImage[]\ getAnimacaoAtual()
+comment5.params=animacao
+comment5.target=void\ setAnimacaoAtual(greenfoot.GreenfootImage[])
+comment6.params=tempo
+comment6.target=void\ setTempoEntreFrames(int)
+comment7.params=anim
+comment7.target=greenfoot.GreenfootImage[]\ espelharAnimacao(greenfoot.GreenfootImage[])
+comment8.params=
+comment8.target=boolean\ animacaoTerminou()
+numComments=9
