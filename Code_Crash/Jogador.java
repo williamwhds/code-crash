@@ -74,7 +74,8 @@ public class Jogador extends ObjetoAnimado
     protected GreenfootImage[] animAtirarDir;
     protected GreenfootImage[] animAtirarEsq;
     
-    protected GreenfootImage[] animProjetil;
+    protected GreenfootImage[] animProjetilDir;
+    protected GreenfootImage[] animProjetilEsq;
     
     /*
      * Configuração da máquina de estado
@@ -106,10 +107,6 @@ public class Jogador extends ObjetoAnimado
             tirarDoMundo();
             encerrarSons();
         }  
-    }
- 
-    public Jogador() {    
-        animProjetil = super.gerarAnimacao("escudo", 6);
     }
     
     public void addedToWorld(World world, int posX) {
@@ -302,19 +299,7 @@ public class Jogador extends ObjetoAnimado
     public void atirar() {
         if (!recarregando) {
             if (municao > 0) {
-                Projetil projetil;
-                int alcanceDoTiro = 900;
-                
-                if (!movendo_Esquerda) {
-                    projetil = new Projetil(20, alcanceDoTiro, danoTiro, animProjetil);
-                    getWorld().addObject(projetil, getX()+30, getY()+30);
-                    estadoAtual = EstadoJogador.ATIRANDO_DIR;
-                } else {
-                    projetil = new Projetil(-20, alcanceDoTiro, danoTiro, animProjetil);
-                    getWorld().addObject(projetil, getX()-30, getY()+30);
-                    estadoAtual = EstadoJogador.ATIRANDO_ESQ;
-                }
-                
+                direcaoProjetil();  
                 municao--;
                 barraRecarga.diminuirValor(1);
                 travarTeclaAtirar = true;
@@ -322,6 +307,34 @@ public class Jogador extends ObjetoAnimado
         } 
     }
     
+        // Configura a direção do tiro
+    public void direcaoProjetil() {
+        int alcanceDoTiro = 900;
+                
+        if (!movendo_Esquerda) {
+            projetilParaDireita(alcanceDoTiro);
+        } else {
+            projetilParaEsquerda(alcanceDoTiro);
+        }
+    }
+    
+        // Atira para a direita
+    public void projetilParaDireita(int alcanceDoTiro) {
+        Projetil projetil = new Projetil(20, alcanceDoTiro, danoTiro);
+        projetil.animacaoPoder(animProjetilDir);
+        getWorld().addObject(projetil, getX()+30, getY()+30);
+        estadoAtual = EstadoJogador.ATIRANDO_DIR;
+    }
+    
+        // Atira para a esquerda
+    public void projetilParaEsquerda(int alcanceDoTiro) {
+        Projetil projetil = new Projetil(-20, alcanceDoTiro, danoTiro);
+        projetil.animacaoPoder(animProjetilEsq);
+        getWorld().addObject(projetil, getX()-30, getY()+30);
+        estadoAtual = EstadoJogador.ATIRANDO_ESQ;
+    }
+    
+        // O jogador não consegue atirar até que o tempo de recarga não for 0
     public void tempoRecarga() {
         if (recarregando) {
             if (tempoRecargaAtual > 0) {

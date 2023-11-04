@@ -15,6 +15,9 @@ public class Jogador1 extends Jogador
         animEstaticoDir = super.gerarAnimacao("Jogadores/j1/j1_parado", 4);
         animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
         
+        animProjetilDir = super.gerarAnimacao("Jogadores/j1/j1_poder", 4, 2);
+        animProjetilEsq = super.espelharAnimacao(animProjetilDir);
+        
         animAtirarDir = super.gerarAnimacao("Jogadores/j1/j1_atirar", 2);
         animAtirarEsq = super.espelharAnimacao(animAtirarDir);
         

@@ -15,11 +15,14 @@ public class Jogador2 extends Jogador
         animEstaticoDir = super.gerarAnimacao("Jogadores/j2/j2_parado", 4);
         animEstaticoEsq = super.espelharAnimacao(animEstaticoDir);
         
-        animAtirarDir = super.gerarAnimacao("Jogadores/j2/j2_atirar", 2, 1);
+        animProjetilDir = super.gerarAnimacao("Jogadores/j2/j2_poder", 4, 2);
+        animProjetilEsq = super.espelharAnimacao(animProjetilDir);
+        
+        animAtirarDir = super.gerarAnimacao("Jogadores/j2/j2_atirar", 2);
         animAtirarEsq = super.espelharAnimacao(animAtirarDir);
         
         animDano = super.gerarAnimacao("Jogadores/j2/j2_dano", 2);
-        animPulando = super.gerarAnimacao("Jogadores/j2/j2_pulando", 6, 1);
+        animPulando = super.gerarAnimacao("Jogadores/j2/j2_pulando", 6);
         
         // Controles
         super.configTeclaEsquerda("left");

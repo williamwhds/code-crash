@@ -8,10 +8,13 @@ public class Projetil extends ObjetoAnimado {
     
     private GreenfootImage[] animPoder;
 
-    public Projetil(double velocidade, int distanciaMaxima, int dano, GreenfootImage[] animacao) {
+    public Projetil(double velocidade, int distanciaMaxima, int dano) {
         this.velocidade = velocidade;
         this.distanciaMaxima = distanciaMaxima;
         this.dano = dano;
+    }
+    
+    public void animacaoPoder(GreenfootImage[] animacao) {
         this.animPoder = animacao;
         setAnimacaoAtual(animPoder);
     }
