@@ -1,47 +1,184 @@
 import greenfoot.*;
 import java.util.List;
 
-public class Chefe extends ObjetoAnimado {
-    private int vida;
-    private int largura = 1000;
-    private int altura = 30;
-    private Color corVermelha = Color.RED;
-
+public class Chefe extends AtorPersonagem { 
+    
+    /*
+     * Configura Barra de Vida
+     */
+    protected BarraFlex barraVida;
+    protected int largura = 1000;
+    protected int altura = 30;
+    protected Color corVermelha = Color.RED;
+    
+    /*
+     * Configura Caracteristicas Físicas
+     */
     private int velocidadeX;
-    private int causarDano;
-
+    private int forca;
+    
+    /*
+     * Configurações Gerais
+     */
+    protected int ladoDireito = 1200;
+    protected int ladoEsquerdo = 100;
+    protected boolean estaNaEsquerda = false;
+    
+    
+    /*
+     * REMOVER
+     */
     private int valorTempo;
     private int tempoDeEspera;
-
     private int distanciaBordaX = 130;
     private int invocacoes = 0;
     private int qnt;
     private int qntChancesInvocarInimigos;
-
-    private boolean ladoEsquerdo = false;
+    //private boolean ladoEsquerdo = false;
     private boolean navegando = false;
     
-    private int contadorDeAtraso = 0;
+    /*
+     * Configurar Animação
+     */
+    protected GreenfootImage[] animParadoDir;
+    protected GreenfootImage[] animParadoEsq;
+    protected GreenfootImage[] animAtacandoDir;
+    protected GreenfootImage[] animAtacandoEsq;
+    protected GreenfootImage[] animCloneDir;
+    protected GreenfootImage[] animCloneEsq;
+    
+    protected EstadoChefe estadoChefeAtual;
 
-    private BarraFlex barraVida;
-    private Inimigo drone;
-
-    public Chefe(int vida, int causarDano, int valorTempo) {
-        this.vida = vida;
-        this.causarDano = causarDano;
-        this.valorTempo = valorTempo;
+    public Chefe(int vida, int forca) {
+        super.vida = vida;
+        this.forca = forca;
     }
-
+    
+    /*
+     * Adiciona objetos referentes ao Chefe no mundo
+     */
     public void addedToWorld(World world) {
         barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
         getWorld().addObject(barraVida, getWorld().getWidth() / 2, 25);
     }
-
+    
     public void act() {
-        acao();
-        verificarColisoesComJogadores();
+        super.gerenciarImunidade();
+        //acao();
+        //verificarColisoesComJogadores();
     }
+    
+    /*
+     * Verifica se o Chefe colidiu com o Jogador e dar dano neles
+     */
+    public void verificarColisoesComJogadores() {
+        Jogador jogador1 = (Jogador) getOneIntersectingObject(Jogador1.class);
+        Jogador jogador2 = (Jogador) getOneIntersectingObject(Jogador2.class);
 
+        if (jogador1 != null) {
+            jogador1.receberAtaque(forca);
+        }
+
+        if (jogador2 != null) {
+            jogador2.receberAtaque(forca);
+        }
+    } 
+    
+    /*
+     * Recebe dano
+     */
+    public void receberAtaque(int dano) {
+        
+        super.receberAtaque(dano);
+        barraVida.diminuirValor(dano);
+
+        if (vida == 0) {
+            getWorld().removeObject(barraVida);
+            getWorld().removeObject(this);
+        }
+    }
+    
+    /*
+     * Maquina de Estado
+     */
+    public void animChefe() {
+        switch (estadoChefeAtual) {
+            case PARADO_DIR:
+                estadoParadoDir();
+                break;
+                
+            case PARADO_ESQ:
+                estadoParadoEsq();
+                break;
+                
+            case ATACANDO_DIR:
+                estadoAtacandoDir();
+                break;
+                
+            case ATACANDO_ESQ:
+                estadoAtacandoEsq();
+                break;
+                
+            case CLONE_DIR:
+                estadoCloneDir();
+                break;
+                
+            case CLONE_ESQ:
+                estadoCloneEsq();
+                break;
+        }
+    }
+    
+        // Animação do Chefe Parado Direita
+    public void estadoParadoDir() {
+        super.setAnimacaoAtual(animParadoDir);
+        super.setTempoEntreFrames(20);
+    }
+    
+        // Animação do Chefe Parado Esquerda
+    public void estadoParadoEsq() {
+        super.setAnimacaoAtual(animParadoEsq);
+        super.setTempoEntreFrames(20);
+    }
+    
+        // Animação do Chefe Atacando Direita
+    public void estadoAtacandoDir() {
+        super.setAnimacaoAtual(animAtacandoDir);
+        super.setTempoEntreFrames(5);
+    }
+    
+        // Animação do Chefe Atacando Esquerda
+    public void estadoAtacandoEsq() {
+        super.setAnimacaoAtual(animAtacandoEsq);
+        super.setTempoEntreFrames(5);
+    }
+    
+        // Animação do Clone Parado Direita
+    public void estadoCloneDir() {
+        super.setAnimacaoAtual(animCloneDir);
+        super.setTempoEntreFrames(20);
+    }
+    
+        // Animação do Clone Parado Esquerda
+    public void estadoCloneEsq() {
+        super.setAnimacaoAtual(animCloneEsq);
+        super.setTempoEntreFrames(20);
+    }
+        
+    /*
+     * Pegar e Definir
+     */
+        // Pegar vida do Chefe
+    public int pegarVida() {
+        return vida;
+    }
+        
+    /*
+    
+    public void definirValorTempo() {
+        this.valorTempo = valorTempo;
+    }
+    
     public void controlarInvocacao(int qnt, int qntChancesInvocarInimigos) {
         this.qnt = qnt;
         this.qntChancesInvocarInimigos = qntChancesInvocarInimigos;
@@ -70,21 +207,7 @@ public class Chefe extends ObjetoAnimado {
             }
         }
     }
-
-    public void dano(int dano) {
-        vida -= dano;
-        barraVida.diminuirValor(dano);
-
-        if (vida < 1) {
-            getWorld().removeObject(barraVida);
-            getWorld().removeObject(this);
-        }
-    }
-
-    public void invocarInimigo() {
-        
-    }
-
+    
     public void moverParaEsquerda() {
         if (getX() > distanciaBordaX) {
             move(-velocidadeX);
@@ -102,30 +225,14 @@ public class Chefe extends ObjetoAnimado {
             ladoEsquerdo = false;
             tempoDeEspera = valorTempo;
         }
-    }
-
-    public void verificarColisoesComJogadores() {
-        Jogador jogador1 = (Jogador) getOneIntersectingObject(Jogador1.class);
-        Jogador jogador2 = (Jogador) getOneIntersectingObject(Jogador2.class);
-
-        if (jogador1 != null) {
-            jogador1.receberAtaque(causarDano);
-        }
-
-        if (jogador2 != null) {
-            jogador2.receberAtaque(causarDano);
-        }
-    }
-
-    public int pegarVida() {
-        return vida;
-    }
-
+    } 
+    
     public void definirVelocidade(int velocidadeX) {
         this.velocidadeX = velocidadeX;
     }
 
     public void definirTempoDeEspera(int valorTempo) {
         this.valorTempo = valorTempo;
-    }
+    } */
+    
 }

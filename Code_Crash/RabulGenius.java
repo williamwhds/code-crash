@@ -1,3 +1,5 @@
+/*
+
 import greenfoot.*;
 import java.util.List;
 
@@ -27,3 +29,4 @@ public class RabulGenius extends Chefe {
         getWorld().addObject(drone, getX(), getY());
     }
 }
+*/

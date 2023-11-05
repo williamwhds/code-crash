@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=AtorPersonagem
+comment1.params=tempoImunidade
+comment1.target=void\ tornarImune(int)
+comment1.text=\r\n\ Torna\ o\ personagem\ imune\r\n
+comment2.params=
+comment2.target=void\ gerenciarImunidade()
+comment3.params=
+comment3.target=void\ tornarVulneravel()
+comment4.params=dano
+comment4.target=void\ receberAtaque(int)
+comment4.text=\r\n\ Receber\ dano\ dos\ inimigos\r\n
+numComments=5

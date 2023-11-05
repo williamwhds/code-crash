@@ -34,7 +34,7 @@ public class Projetil extends ObjetoAnimado {
                     removerDoMundo();
                 }
                 if (chefe != null && getWorld() != null) {
-                    chefe.dano(dano);
+                    chefe.receberAtaque(dano);
                     removerDoMundo();
                 }
             }

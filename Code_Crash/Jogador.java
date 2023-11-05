@@ -1,7 +1,12 @@
 import greenfoot.*;
 
-public class Jogador extends ObjetoAnimado
-{
+public class Jogador extends AtorPersonagem
+{   
+    /*
+     * Vida
+     */
+    Coracao coracao;
+    
     /*
      * Teclas chaves dos movimentos do personagem
      */
@@ -42,22 +47,8 @@ public class Jogador extends ObjetoAnimado
      */
     private boolean estaPulando = false;
     private boolean movendo_Esquerda = false;
-    protected boolean receberAtaque = false;
     private boolean recarregando = false;
     private boolean atirou = false;
-    
-    /*
-     * Vida
-     */
-    Coracao coracao;
-    private int vida = 10;
-    private boolean estaVivo = true;
-    
-    /*
-     * Imunidade
-     */
-    private boolean estaImune = false;
-    private int tempoImunidade = 120;
     
     /*
      * Armazena as animações
@@ -91,6 +82,10 @@ public class Jogador extends ObjetoAnimado
     GreenfootSound somRemover = new GreenfootSound("remover.mp3");
     GreenfootSound somPulo = new GreenfootSound("Pulo.mp3");
     
+    public Jogador() {
+        super.vida = 10;
+    }
+    
     public void act() { 
         super.animar();
         animJogador();
@@ -120,29 +115,7 @@ public class Jogador extends ObjetoAnimado
     public void moverBarra() {
         barraRecarga.setLocation(getX(), getY()-70);
     }
-    
-    /*
-     * Efeitos sonoros
-     */
-    public void tocarSomDisparo () {
-        if (somDisparo.isPlaying()) {
-            somDisparo.stop();
-        }
-        somDisparo.play();
-    }
-    
-    public void tocarSomPulo () {
-        if (somPulo.isPlaying()) somPulo.stop();
-        somPulo.play();
-    }
 
-    public void encerrarSons() {
-        somDisparo.stop();
-        somRecarregando.stop();
-        somDanoGlitch.stop();
-        somPulo.stop();
-        //somRemover.stop();
-    }
     
     /*
      * Configuração de Teclas
@@ -250,7 +223,7 @@ public class Jogador extends ObjetoAnimado
      * Estabelece a física de queda do personagem no mundo
      */
     public void gravidade() {
-        
+
         estaNaPlataforma();
         
         if (!estaPulando && getY() < getWorld().getHeight() - getImage().getHeight() / 2) {
@@ -360,25 +333,29 @@ public class Jogador extends ObjetoAnimado
      * Receber dano dos inimigos
      */
     public void receberAtaque(int dano) {
-        if (!estaImune && estaVivo) {
-            vida-=dano;
-            
-            estadoAtual = EstadoJogador.DANO;
+        if (!super.estaImune && estaVivo) {
             
             if (vida < 0 ) {
                 vida = 0;
             }
             
-            tornarImune();
-            receberAtaque = true;
+            super.receberAtaque(dano);
+            super.tornarImune(180);
+            estadoAtual = EstadoJogador.DANO;
             coracao.atualizarVida(vida);
+        }
+    }
+    
+    public void gerenciarImunidade() {
+        if (super.estaImune) {
+            estadoAtual = EstadoJogador.DANO;
+            super.gerenciarImunidade();
         }
     }
     
     /*
      * Verifica estado do personagem
      */
-    
         // Define personagem como Vivo
     public void viver() {
         estaVivo = true;
@@ -410,26 +387,6 @@ public class Jogador extends ObjetoAnimado
         vida = 10;
         coracao.atualizarVida(vida);
         viver();
-    }
-    
-    /*
-     * Torna o jogador imune após levar dano
-     */
-    public void tornarImune() {
-        estaImune = true;
-        tempoImunidade = 180;
-    }
-    
-        // O Jogador fica imune a ataques até que o tempo chegue a 0
-    public void gerenciarImunidade() {
-        if (estaImune) {
-            estadoAtual = EstadoJogador.DANO;
-            
-            tempoImunidade--;
-            if (tempoImunidade <= 0) {
-                estaImune = false;
-            }
-        }
     }
     
     /*
@@ -522,5 +479,28 @@ public class Jogador extends ObjetoAnimado
         if (!estaImune) somDanoGlitch.stop();
         super.setAnimacaoAtual(animDano);
         super.setTempoEntreFrames(5);
+    }
+    
+    /*
+     * Efeitos sonoros
+     */
+    public void tocarSomDisparo () {
+        if (somDisparo.isPlaying()) {
+            somDisparo.stop();
+        }
+        somDisparo.play();
+    }
+    
+    public void tocarSomPulo () {
+        if (somPulo.isPlaying()) somPulo.stop();
+        somPulo.play();
+    }
+
+    public void encerrarSons() {
+        somDisparo.stop();
+        somRecarregando.stop();
+        somDanoGlitch.stop();
+        somPulo.stop();
+        //somRemover.stop();
     }
 }

@@ -1,7 +1,7 @@
 import greenfoot.*;
 import java.util.List;
 
-public class Inimigo extends ObjetoAnimado {
+public class Inimigo extends AtorPersonagem {
     
     /*
      * Configurar Barra de Vida

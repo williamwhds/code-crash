@@ -43,7 +43,7 @@ public class CodeCrash extends World {
     public CodeCrash() {
         super(1220, 600, 1);
         fase();
-        musicaDeFundo.setVolume(30);
+        musicaDeFundo.setVolume(10);
         //prepare();
     }
 
@@ -74,10 +74,10 @@ public class CodeCrash extends World {
     public void fase() {
         switch (faseAtual) {
             case 1:
-                prepararFase1();
+                // prepararFase1();
                 break;
             case 2:
-                prepararFase2();
+                // prepararFase2();
                 break;
             case 3:
                 prepararFase3();
@@ -86,7 +86,7 @@ public class CodeCrash extends World {
                 break;
         }
     }
-    
+    /*
     public void prepararFase1() {
         setBackground(fundoFase1);
         configurarJogadores();
@@ -193,17 +193,18 @@ public class CodeCrash extends World {
             chefeInvocado = false;
             fase();
         }
-    }
+    } */
     int spawn = 0;
     public void prepararFase3() {
         setBackground(fundoFase1);
         configurarJogadores();
-        /*
+        
+        
         if (spawn == 0) {
             spawn=1;
-            Chefe chefe3 = new Chefe2();
-            addObject(chefe3, getWidth(), getHeight()-100);
-        }*/
+            Chefe chefe3 = new Chefe3();
+            addObject(chefe3, getWidth(), getHeight()-145);
+        }
     }
 
 }

@@ -1,3 +1,4 @@
+/*
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 public class Chefe2 extends Chefe
@@ -28,3 +29,4 @@ public class Chefe2 extends Chefe
         getWorld().addObject(espectro, getX(), getY());
     }
 }
+*/

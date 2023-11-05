@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=EfeitoClonagem
+comment1.params=animClone
+comment1.target=EfeitoClonagem(greenfoot.GreenfootImage[])
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ animarClone()
+numComments=4
