@@ -26,7 +26,12 @@ public class Chefe3 extends Chefe
      * Listas
      */
     private ArrayList<Integer> posY;
-        
+    
+    // Horda
+    Inimigo[] possiveisInimigos = {new Inimigo1(), new EspectroDoDesespero()};
+    int[][] possiveisCoordenadas = {{10, 10}, {70, 10}};
+    private Horda horda = new Horda(10, 5, possiveisInimigos, possiveisCoordenadas, true);
+    
     public Chefe3() {
         super(vidaMax, forca);
         
@@ -41,7 +46,9 @@ public class Chefe3 extends Chefe
         // Cria uma lista que recebe números para a posição Y
         posY = new ArrayList<Integer>();
         addPosY();
-        Collections.shuffle(posY); 
+        Collections.shuffle(posY);
+        
+        getWorld().addObject(horda, 50, 50);
     }
     
         // Adiciona coordenadas na lista para a invocação aleatória dos raios
