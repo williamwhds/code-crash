@@ -223,10 +223,12 @@ public class Jogador extends AtorPersonagem
      * Estabelece a física de queda do personagem no mundo
      */
     public void gravidade() {
-
-        estaNaPlataforma();
+        if (naPlataforma()) {
+            System.out.println("Estou na plataforma");
+            estaPulando = false;
+        }
         
-        if (!estaPulando && getY() < getWorld().getHeight() - getImage().getHeight() / 2) {
+        if (!naPlataforma() && !estaPulando && getY() < getWorld().getHeight() - getImage().getHeight() / 2) {
             
             velocidadeY += 0.5;
             setLocation(getX(), getY() + (int) velocidadeY);
@@ -238,18 +240,11 @@ public class Jogador extends AtorPersonagem
         }
     }
     
-    public void estaNaPlataforma() {
-        
-        Plataforma plataforma = (Plataforma) getOneIntersectingObject(Plataforma.class);
-    
-        if (plataforma != null) {
-            int alturaDoAtor = getImage().getHeight() / 2;
-            int alturaDaPlataforma = plataforma.getImage().getHeight() / 2;
-            int novaPosicaoY = plataforma.getY() - alturaDaPlataforma - alturaDoAtor;
-            setLocation(getX(), novaPosicaoY);
-            estaPulando = false;
+    public boolean naPlataforma() {
+        if (getOneIntersectingObject(Plataforma.class) != null) {
+            return true;
         }
-        
+        return false;
     }
     
     /*

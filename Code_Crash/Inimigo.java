@@ -135,15 +135,11 @@ public class Inimigo extends AtorPersonagem {
         }
     }
     
-    public void estaNaPlataforma() {
-        List<Plataforma> plataformas = getIntersectingObjects(Plataforma.class);
-
-        if (!plataformas.isEmpty()) {
-            int alturaDoAtor = getImage().getHeight() / 2;
-            int alturaDaPlataforma = plataformas.get(0).getImage().getHeight() / 2;
-            int novaPosicaoY = plataformas.get(0).getY() - alturaDaPlataforma - alturaDoAtor;
-            setLocation(getX(), novaPosicaoY);
+    public boolean noChao() {
+        if (getOneIntersectingObject(Plataforma.class) != null) {
+            return true;
         }
+        return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
     
     public Jogador procurarJogadorMaisProximo() {
@@ -188,8 +184,6 @@ public class Inimigo extends AtorPersonagem {
     
     public void gravidade() 
     {
-        estaNaPlataforma();
-        
         if (noChao()) {
             velocidadeY = 0;
         } else {
@@ -197,11 +191,6 @@ public class Inimigo extends AtorPersonagem {
         }
 
         setLocation(getX(), getY() + velocidadeY);
-    }
-    
-    public boolean noChao() 
-    {
-        return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
     
     public void definirVelocidade(int velocidadeX){
