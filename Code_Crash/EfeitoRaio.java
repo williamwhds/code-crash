@@ -30,11 +30,11 @@ public class EfeitoRaio extends Efeito
         Jogador jogador2 = (Jogador) getOneIntersectingObject(Jogador2.class);
         
         if (jogador1 != null && getWorld() != null) {
-            jogador1.receberAtaque(3);
+            jogador1.receberAtaque(2);
         }
         
         if (jogador2 != null && getWorld() != null) {
-            jogador2.receberAtaque(3);
+            jogador2.receberAtaque(2);
         }
     }
     

@@ -1,46 +1,56 @@
 import greenfoot.*;
+import java.util.List;
 
 public class Projetil extends ObjetoAnimado {
+    
     private double velocidade;
     private int distanciaPercorrida;
     private int distanciaMaxima;
     private int dano;
-    
+    private boolean colidiu;
+
     private GreenfootImage[] animPoder;
 
     public Projetil(double velocidade, int distanciaMaxima, int dano) {
         this.velocidade = velocidade;
         this.distanciaMaxima = distanciaMaxima;
         this.dano = dano;
+        this.colidiu = false;
     }
-    
+
     public void animacaoPoder(GreenfootImage[] animacao) {
         this.animPoder = animacao;
         setAnimacaoAtual(animPoder);
     }
 
     public void act() {
-        if (!isAtEdge()) {
+        if (!isAtEdge() && !colidiu) {
             distanciaPercorrida += velocidade;
             if (distanciaPercorrida >= distanciaMaxima) {
                 removerDoMundo();
             } else {
-                Inimigo inimigo = (Inimigo) getOneIntersectingObject(Inimigo.class);
-                Chefe chefe = (Chefe) getOneIntersectingObject(Chefe.class);
+                verificarColisao();
                 move((int) velocidade);
-                
-                if (inimigo != null && getWorld()!=null) {
-                    inimigo.dano(dano);
-                    removerDoMundo();
-                }
-                if (chefe != null && getWorld() != null) {
-                    chefe.receberAtaque(dano);
-                    removerDoMundo();
-                }
             }
             super.animar();
         } else {
             removerDoMundo();
+        }
+    }
+
+    public void verificarColisao() {
+        // Verificar colisão com inimigos
+        List<Inimigo> inimigos = getIntersectingObjects(Inimigo.class);
+        for (Inimigo inimigo : inimigos) {
+            inimigo.receberAtaque(dano);
+            colidiu = true; // Tirando esse atributo, o projetil atravessa todos os Inimigos
+                            // E os mata
+        }
+
+        List<Chefe> chefes = getIntersectingObjects(Chefe.class);
+        for (Chefe chefe : chefes) {
+            chefe.receberAtaque(dano);
+            colidiu = true;
         }
     }
     

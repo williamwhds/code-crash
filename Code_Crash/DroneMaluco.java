@@ -16,10 +16,6 @@ public class DroneMaluco extends Inimigo
            gravidade();
            definirSubidaEDescida();
        }
-        
-       if (removidoDoMundo){
-           getWorld().removeObject(this);
-       }
     }
     
     public void gravidade() {

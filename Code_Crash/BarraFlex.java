@@ -53,6 +53,12 @@ public class BarraFlex extends Actor {
         return valorMax;
     }
     
+    public void redefinirValores(int novoValor) {
+        this.valorAtual = novoValor;
+        this.valorMax = novoValor;
+        atualizar();
+    }
+    
     public void setCor(Color cor) {
         corDaBarraTemp = cor;
     }

@@ -11,12 +11,6 @@ public class EspectroDoDesespero extends Inimigo
     }
     
     public void act() {
-       if (!removidoDoMundo) {
-           super.act();
-       }
-        
-       if (removidoDoMundo){
-           getWorld().removeObject(this);
-       }
+        super.act();
     }
 }

@@ -11,34 +11,40 @@ public class CodeCrash extends World {
     /*
      * Configurações dos Inimigos
      */
-    List<Inimigo1> inimigos;
-    private int totalInimigosInvocados = 0;
-    private boolean invocandoInimigos = true;
-    private int numDeInimigosInvocados = 0;
+    private int inimigosMortos = 0;
+    private boolean invocarInimigos = true;
     
     /*
      * Configurações dos Chefes
-     */
+     */   
     private int totalChefesInvocados = 0;
-    boolean chefeInvocado = false;
+    private int chefeMorto = 0;
+    private int tempoEspera = 2*60;
+    //boolean chefeInvocado = false;
     
     /*
      * Configuração das fases 
      */
-    private int faseAtual = 3;
+    private int faseAtual = 4;
     
     GreenfootImage fundoFase1 = new GreenfootImage("Back01.png");
     GreenfootImage fundoFase2 = new GreenfootImage("Back03.png");
+    GreenfootImage fundoFase3 = new GreenfootImage("Back02.png");
+    GreenfootImage fundoFase4 = new GreenfootImage("Back04.png");
     
     /*
      * Configuração do Som
      */
     private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
     
+    private int ladoDireito = getWidth();
+    private int altura = getHeight()-100;
     
+    private boolean iniciarEtapa = false;
+
     // Corrigir
-    private boolean estaEsquerda = false;
-    private int tempoDeEspera = 0;
+    //private boolean estaEsquerda = false;
+    //private int tempoDeEspera = 0;
     
     public CodeCrash() {
         super(1220, 600, 1);
@@ -57,10 +63,10 @@ public class CodeCrash extends World {
     
     public void configurarJogadores() {
         if (jogador1.estaVivo()) {
-            addObject(jogador1, 65, 535);
+            this.addObject(jogador1, 65, 535);
         }
         if (jogador2.estaVivo()) {
-            addObject(jogador2, 170, 535);
+            this.addObject(jogador2, 170, 535);
         }
     }
     
@@ -69,6 +75,14 @@ public class CodeCrash extends World {
         
         jogador1.redefinirVida();
         jogador2.redefinirVida();
+        redefinirConfiguracoes();
+    }
+    
+    public void redefinirConfiguracoes() {
+        tempoEspera = 2*60;
+        inimigosMortos = 0;
+        totalChefesInvocados = 0;
+        chefeMorto = 0;
     }
     
     public void fase() {
@@ -82,7 +96,11 @@ public class CodeCrash extends World {
             case 3:
                 prepararFase3();
                 break;
+            case 4:
+                prepararFase4();
+                break;
             default:
+                setBackground(fundoFase1);
                 break;
         }
     }
@@ -194,17 +212,85 @@ public class CodeCrash extends World {
             fase();
         }
     } */
-    int spawn = 0;
+    
     public void prepararFase3() {
-        setBackground(fundoFase1);
+        setBackground(fundoFase3);
         configurarJogadores();
         
+        int numeroDeInimigos = contarInimigos();
         
-        if (spawn == 0) {
-            spawn=1;
-            Chefe chefe3 = new Chefe3();
-            addObject(chefe3, getWidth(), getHeight()-145);
+        Horda horda = new Horda(6, 6, new Inimigo[]{new Inimigo1(), new EspectroDoDesespero()}, new int[][]{{ladoDireito, altura}}, false);
+        addObject(horda, 0, 0);
+        
+        if (inimigosMortos < 25) {
+            horda.iniciarProximaEtapa();
+        }
+        /*
+        if (invocarInimigos && inimigosMortos < 25) {
+            horda.iniciarProximaEtapa();
+            invocarInimigos = false;
+        }*/
+        
+        if (inimigosMortos >= 25 && totalChefesInvocados == 0 && numeroDeInimigos == 0) {
+            tempoEspera--;
+            if (tempoEspera == 0) {
+                Chefe chefe3 = new Chefe3();
+                addObject(chefe3, getWidth(), getHeight() - 145);
+                totalChefesInvocados = 1;
+            }
+        }
+        
+        if (chefeMorto == 1) {
+            passarFase();
+            //System.out.println("Passar De Fase " + faseAtual);
         }
     }
-
+    int invocouHorda = 0;
+    Horda horda;
+    
+    public void prepararFase4() {
+        setBackground(fundoFase4);
+        configurarJogadores();
+        
+        int numeroDeInimigos = contarInimigos();
+        
+        if (invocouHorda < 1) {
+            horda = new Horda(12, 3, new Inimigo[]{new Inimigo1(), new EspectroDoDesespero()}, new int[][]{{ladoDireito, altura}}, false);
+            
+            invocouHorda+=1;
+        }
+        addObject(horda, 0, 0);
+        
+        if (inimigosMortos < 35) {
+            horda.iniciarProximaEtapa();
+        }
+        
+        if (inimigosMortos >= 35 && totalChefesInvocados == 0 && numeroDeInimigos == 0) {
+            tempoEspera--;
+            if (tempoEspera == 0) {
+                Chefe chefe4 = new Chefe4();
+                addObject(chefe4, getWidth()-100, getHeight() - 220);
+                totalChefesInvocados = 1;
+            }
+        }
+        
+        if (chefeMorto == 1) {
+            passarFase();
+        }
+    }
+    
+    public int contarInimigos() {
+        List<Inimigo> inimigos = getObjects(Inimigo.class);
+        return inimigos.size();
+    }
+    
+    public void inimigoDerrotado() {
+        this.inimigosMortos++;
+        //System.out.println("Inimigos Mortos: " + inimigosMortos);
+    }
+    
+    public void chefeDerrotado() {
+        this.chefeMorto++;
+        System.out.println("Boss Mortos: " + chefeMorto);
+    }
 }

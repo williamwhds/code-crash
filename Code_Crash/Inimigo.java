@@ -6,7 +6,7 @@ public class Inimigo extends AtorPersonagem {
     /*
      * Configurar Barra de Vida
      */
-    private int vida;
+    //private int vida;
     private int largura = 100;
     private int altura = 10;
     private BarraFlex barraVida;
@@ -25,10 +25,11 @@ public class Inimigo extends AtorPersonagem {
     
     protected boolean removidoDoMundo = false;
     private boolean ativarEspera = false;
+    private boolean modoPacifico = false;
     //protected boolean noChao = false;
 
     public Inimigo(int vida, int forca) {
-        this.vida = vida;
+        super.vida = vida;
         this.forca = forca;
     }
     
@@ -43,10 +44,21 @@ public class Inimigo extends AtorPersonagem {
     public void act() {
         if (getWorld() != null) {
             gravidade();
-            atacarJogadores();
-            tempoRecarga();
-            moverBarra();
+            
+            if (!modoPacifico) {
+                atacarJogadores();
+                tempoRecarga();
+                moverBarra();
+            }
         }
+    }
+    
+    public void ativarModoPacifico() {
+        this.modoPacifico = true;
+    }
+    
+    public void desativarModoPacifico() {
+        this.modoPacifico = false;
     }
     
     public void atacarJogadores() {
@@ -67,23 +79,40 @@ public class Inimigo extends AtorPersonagem {
                 }
             }
         }
-        
+        /*
         if (vida <= 0) {
-            removerDoMundo();
+            receberAtaque(12);
+            //removerDoMundo();
+        }*/
+    }
+    
+    public void receberAtaque(int dano) {
+        if (!super.estaImune && estaVivo) {
+            super.receberAtaque(dano);
+            barraVida.diminuirValor(dano);
+            if (vida == 0) {
+              
+                World mundo = getWorld();
+                if (mundo instanceof CodeCrash) {
+                    CodeCrash world = (CodeCrash) getWorld();
+                    world.inimigoDerrotado();
+                }
+                
+                getWorld().removeObject(barraVida);
+                getWorld().removeObject(this);
+                removidoDoMundo = true;
+                //estaVivo = false;
+            }
         }
+        //System.out.println("Vida Inimigo: " + vida);
     }
-    
-    public void dano(int dano) {
-        vida-=dano;
-        barraVida.diminuirValor(dano);
-    }
-    
+    /*
     public void removerDoMundo() {
         if (getWorld() != null) {
             removidoDoMundo = true;
             getWorld().removeObject(barraVida);
         }
-    }
+    }*/
     
     /*
      * Movimento da barra de vida
@@ -133,13 +162,6 @@ public class Inimigo extends AtorPersonagem {
                 tempoDeEspera = 60;
             }
         }
-    }
-    
-    public boolean noChao() {
-        if (getOneIntersectingObject(Plataforma.class) != null) {
-            return true;
-        }
-        return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
     
     public Jogador procurarJogadorMaisProximo() {
@@ -193,7 +215,24 @@ public class Inimigo extends AtorPersonagem {
         setLocation(getX(), getY() + velocidadeY);
     }
     
+    public boolean noChao() {
+        if (getOneIntersectingObject(Plataforma.class) != null) {
+            return true;
+        }
+        return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
+    }
+    
     public void definirVelocidade(int velocidadeX){
         this.velocidadeX = velocidadeX;
+    }
+    
+    public void definirVida(int vida) {
+        super.vida = vida;
+        barraVida.redefinirValores(vida);
+        // barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
+    }
+    
+    public void definirForca(int forca) {
+        this.forca = forca;
     }
 }

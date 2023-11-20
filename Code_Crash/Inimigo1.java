@@ -2,21 +2,18 @@ import greenfoot.*;
 
 public class Inimigo1 extends Inimigo
 {   
-    private int velocidadeX = 2;
+    private static int vida = 20;
+    private static int forca = 1;
+    private static int velocidadeX = 2;
     
     public Inimigo1() {
-        super(20, 1);
+        super(vida, forca);
         
         definirVelocidade(velocidadeX);
     }
     
     public void act() {
-       if (!removidoDoMundo) {
-           super.act();
-       }
-        
-       if (removidoDoMundo){
-           getWorld().removeObject(this);
-       }
+        super.act();
+       
     }
 }

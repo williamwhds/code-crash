@@ -1,41 +1,30 @@
-import greenfoot.*;  
+import greenfoot.*;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Chefe3 extends Chefe
 {
-    /*
-     * Características específicas do Chefe
-     */
-    static int vidaMax = 100;
-    static int forca = 3;
-    int tempoAtaque = 1000; // Valor teste
+    private static int vidaMax = 100;
+    private static int forca = 1;
+    private int tempoAtaque = 1000;
+    private int aguardarAtaque;
     
-    /*
-     * Configurar Habilidades
-     */
-        // Raios
     private Efeito raio;
     private int qntRaio;
+    private int tempoAntesRaio = 2*60;
     private int intervalo = 100;
-        
-        // Clone
-    private int qntClone;
-     
-    /*
-     * Listas
-     */
-    private ArrayList<Integer> posY;
     
-    // Horda
-    Inimigo[] possiveisInimigos = {new Inimigo1(), new EspectroDoDesespero()};
-    int[][] possiveisCoordenadas = {{10, 10}, {70, 10}};
-    private Horda horda = new Horda(10, 5, possiveisInimigos, possiveisCoordenadas, true);
+    private Efeito clone;
+    private int qntClone;
+    
+    private ArrayList<Integer> posY;
     
     public Chefe3() {
         super(vidaMax, forca);
         
-        // Imagens dos estados para o chefe
         animParadoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_calmo", 6);
         animParadoDir = super.espelharAnimacao(animParadoEsq);
         animCloneEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_clone", 6);
@@ -43,44 +32,63 @@ public class Chefe3 extends Chefe
         animAtacandoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_atacando", 3);
         animAtacandoDir = super.espelharAnimacao(animAtacandoEsq);
         
-        // Cria uma lista que recebe números para a posição Y
+        super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
+        
+        super.ficarImune();
+        
         posY = new ArrayList<Integer>();
         addPosY();
         Collections.shuffle(posY);
-        
-        getWorld().addObject(horda, 50, 50);
     }
     
-        // Adiciona coordenadas na lista para a invocação aleatória dos raios
     public void addPosY() {
         posY.add(201);
         posY.add(370);
-        posY.add(520);  
+        posY.add(520);
     }
     
     public void act()
     {
         super.animar();
-        super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
+        super.animChefe();
         
+        super.verificarColisoesComJogadores();
+        
+        if (getX() > getWorld().getWidth() - 100) move(-5);
         iniciarAtaque();
-           
-        //if (getX() > getWorld().getWidth()-100) move(-5);
-    }
-    
-    public void iniciarAtaque() {  
-        tempoAtaque--;
-        
-        if (tempoAtaque > 0) {
-            super.estadoChefeAtual = EstadoChefe.ATACANDO_ESQ;  
-            super.tornarImune(tempoAtaque);
-            atacar();
-        } 
     }
     
     public void definirTempoAtaque(int tempoAtaque) {
         this.tempoAtaque = tempoAtaque;
     }
+    
+    public void iniciarAtaque() {  
+        tempoAtaque--;
+        tempoAntesRaio--;
+        if (tempoAtaque > 0) {
+            super.estadoChefeAtual = EstadoChefe.ATACANDO_ESQ;  
+            super.tornarImune(tempoAtaque);
+            if (tempoAntesRaio <= 0) atacar();
+        } else {
+            
+            if (tempoAtaque == 0) {
+                super.tornarVulneravel();
+                super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
+                //invocarClone(animCloneDir, pegarLadoEsquerdo());
+                tempoAtaque = 1;  
+            } 
+            
+            if (aguardarAtaque == (3*60)) {
+                //removerClone();
+                aguardarAtaque = 0;
+                tempoAtaque = 1000;
+                tempoAntesRaio = 2*60;
+            }
+            aguardarAtaque++;
+            //System.out.println("Aguardar Ataque! : " + aguardarAtaque);
+        }
+    }
+
     
     public void atacar() {  
         double vidaAtual = super.pegarVida();
@@ -103,7 +111,7 @@ public class Chefe3 extends Chefe
             qntRaioAlvo = 2;
             intervaloAlvo = 80;
         }
-    
+
         if (qntRaio == 0) {
             qntRaio++;
             invocarRaio(qntRaioAlvo);
@@ -111,22 +119,19 @@ public class Chefe3 extends Chefe
         
         if (intervalo <= 0) {
             desenvocarRaio(intervaloAlvo);
-            System.out.println("Desenvocado.");
+            //System.out.println("Desenvocado.");
         }
         //System.out.println("intervalo: " + intervalo);
     }
     
     public void invocarRaio(int qntRaio) {
-        Collections.shuffle(posY); // Reembaralhe a lista posY
+        Collections.shuffle(posY);
         int novoPosY;
         
         for (int i = 0; i < qntRaio; i++) {
             novoPosY = posY.get(i);
-            
             raio = new EfeitoRaio();
-            getWorld().addObject(raio, getWorld().getHeight(), novoPosY);
-            System.out.println("Indice: " + i);
-            System.out.println("Posição Y: " + novoPosY);
+            getWorld().addObject(raio, getWorld().getHeight()-100, novoPosY);
         }
     }
     
@@ -146,39 +151,18 @@ public class Chefe3 extends Chefe
         raio.remover();
     }
     
-    /*
-     * Invoca um Clone do Chefe no lado oposto a ele
-     */
     public void invocarClone(GreenfootImage[] animPosicaoAtual, int ladoAtual) {
         if (qntClone == 0) {
-            Efeito clone = new EfeitoClonagem(animPosicaoAtual);
+            clone = new EfeitoClonagem(animPosicaoAtual);
             getWorld().addObject(clone, ladoAtual, getY());
-            qntClone+=1;
+            qntClone += 1;
         }
     }
     
-    /*
-     * Muda o Chefe de lugar, com base na sua posição atual
-     */
-    public void mudarDeLugar() {
-        if (estaNaEsquerda) {
-            mudarParaLadoDireito();
-        } else {
-            mudarParaLadoEsquerdo();
+    public void removerClone() {
+        if (getWorld() != null && clone != null) {            
+            getWorld().removeObject(clone);
+            qntClone = 0;
         }
-    }
-    
-        // O Chefe vai para o lado Esquerdo
-    public void mudarParaLadoEsquerdo() {
-        setLocation(ladoEsquerdo, getY());
-        estaNaEsquerda = true;
-        invocarClone(animCloneDir, ladoDireito);
-    }
-    
-        // O Chefe vai para o lado Direito
-    public void mudarParaLadoDireito() {
-        setLocation(ladoDireito, getY());
-        estaNaEsquerda = false;
-        invocarClone(animCloneEsq, ladoEsquerdo);
     }
 }

@@ -224,7 +224,7 @@ public class Jogador extends AtorPersonagem
      */
     public void gravidade() {
         if (naPlataforma()) {
-            System.out.println("Estou na plataforma");
+            // System.out.println("Estou na plataforma");
             estaPulando = false;
         }
         

@@ -20,14 +20,17 @@ public class Chefe extends AtorPersonagem {
     /*
      * Configurações Gerais
      */
-    protected int ladoDireito = 1200;
-    protected int ladoEsquerdo = 100;
+    private int ladoDireito = 1220-100;
+    private int ladoEsquerdo = 100;
     protected boolean estaNaEsquerda = false;
-    
     
     /*
      * REMOVER
      */
+    protected int tempoEspera;
+    protected int tempoAtaque;
+    
+    
     private int valorTempo;
     private int tempoDeEspera;
     private int distanciaBordaX = 130;
@@ -64,6 +67,7 @@ public class Chefe extends AtorPersonagem {
     
     public void act() {
         super.gerenciarImunidade();
+        animChefe();
         //acao();
         //verificarColisoesComJogadores();
     }
@@ -89,13 +93,31 @@ public class Chefe extends AtorPersonagem {
      */
     public void receberAtaque(int dano) {
         
-        super.receberAtaque(dano);
-        barraVida.diminuirValor(dano);
-
-        if (vida == 0) {
-            getWorld().removeObject(barraVida);
-            getWorld().removeObject(this);
+        if (!super.estaImune && estaVivo) {
+            super.vida-=dano;
+            barraVida.diminuirValor(dano);
+            super.efeitoSangue();            
+            if (vida <= 0 ) {
+                CodeCrash world = (CodeCrash) getWorld();
+                world.chefeDerrotado();
+                
+                efeitoFumaca(10);
+                vida = 0;
+                getWorld().removeObject(barraVida);
+                getWorld().removeObject(this);
+                //getWorld().removeObject(this);
+            }
+            //System.out.println("Ele está perdendo vida!: " + vida);
         }
+        //System.out.println("Vida Boss: " + super.vida);
+    }
+    
+    public void ficarImune() {
+        super.ficarImune();
+    }
+    
+    public void tornarVulneravel() {
+        super.tornarVulneravel();
     }
     
     /*
@@ -117,14 +139,6 @@ public class Chefe extends AtorPersonagem {
                 
             case ATACANDO_ESQ:
                 estadoAtacandoEsq();
-                break;
-                
-            case CLONE_DIR:
-                estadoCloneDir();
-                break;
-                
-            case CLONE_ESQ:
-                estadoCloneEsq();
                 break;
         }
     }
@@ -150,19 +164,7 @@ public class Chefe extends AtorPersonagem {
         // Animação do Chefe Atacando Esquerda
     public void estadoAtacandoEsq() {
         super.setAnimacaoAtual(animAtacandoEsq);
-        super.setTempoEntreFrames(5);
-    }
-    
-        // Animação do Clone Parado Direita
-    public void estadoCloneDir() {
-        super.setAnimacaoAtual(animCloneDir);
-        super.setTempoEntreFrames(20);
-    }
-    
-        // Animação do Clone Parado Esquerda
-    public void estadoCloneEsq() {
-        super.setAnimacaoAtual(animCloneEsq);
-        super.setTempoEntreFrames(20);
+        super.setTempoEntreFrames(10);
     }
         
     /*
@@ -172,6 +174,33 @@ public class Chefe extends AtorPersonagem {
     public int pegarVida() {
         return vida;
     }
+    
+    public int pegarLadoEsquerdo() {
+        return ladoEsquerdo;
+    }
+    
+    public int pegarLadoDireito() {
+        return ladoDireito;
+    }
+    
+    public void definirEstaNaEsquerda(boolean estaNaEsquerda) {
+        this.estaNaEsquerda = estaNaEsquerda;
+    }
+    
+    // Retorna True se tempo chegar a 0
+    public boolean tempoEspera() {
+        this.tempoEspera-=1;
+        if (tempoEspera<0) tempoEspera=0;
+        
+        return tempoEspera==0;
+    }
+    
+    // Retorna True enquanto o tempo for maior que 0
+    public boolean tempoAtaque() {
+        tempoAtaque-=1;
+        return tempoAtaque > 0;
+    }
+    
         
     /*
     
