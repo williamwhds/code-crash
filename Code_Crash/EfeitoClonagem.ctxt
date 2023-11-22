@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=EfeitoClonagem
+comment0.text=\r\n\ N\u00E3o\ consigo\ pegar\ os\ m\u00E9todos\ dessa\ classe\ quando\ crio\ um\ objeto\ dela\ em\ outra\ classe\r\n
+comment1.params=animClone
+comment1.target=EfeitoClonagem(greenfoot.GreenfootImage[])
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ animarClone()
+comment4.params=vida
+comment4.target=void\ definirVida(int)
+comment5.params=dano
+comment5.target=void\ diminuirVida(int)
+comment6.params=
+comment6.target=void\ removerDoMundo()
+comment7.params=
+comment7.target=void\ moverDireita()
+numComments=8

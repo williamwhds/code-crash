@@ -1,0 +1,27 @@
+#BlueJ class context
+comment0.target=Chefe3
+comment1.params=
+comment1.target=Chefe3()
+comment10.params=
+comment10.target=void\ removerRaio()
+comment11.params=animPosicaoAtual\ ladoAtual
+comment11.target=void\ invocarClone(greenfoot.GreenfootImage[],\ int)
+comment12.params=
+comment12.target=void\ removerClone()
+comment2.params=
+comment2.target=void\ addPosY()
+comment3.params=
+comment3.target=void\ act()
+comment4.params=tempoAtaque
+comment4.target=void\ definirTempoAtaque(int)
+comment5.params=
+comment5.target=void\ iniciarAtaque()
+comment6.params=
+comment6.target=void\ atacar()
+comment7.params=qntRaio
+comment7.target=void\ invocarRaio(int)
+comment8.params=intervalo
+comment8.target=void\ desenvocarRaio(int)
+comment9.params=tempo
+comment9.target=void\ redefinirIntervalo(int)
+numComments=13
