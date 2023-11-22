@@ -27,15 +27,29 @@ public class Inimigo extends AtorPersonagem {
     private boolean ativarEspera = false;
     private boolean modoPacifico = false;
     //protected boolean noChao = false;
+    
+    /*
+     * Configurar Animação
+     */
+    
+    protected GreenfootImage[] animParadoEsq;
+    protected GreenfootImage[] animParadoDir;
+    protected GreenfootImage[] animAtacandoEsq;
+    protected GreenfootImage[] animAtacandoDir;
+    
+    protected EstadoInimigo estadoAtualInimigo;
 
     public Inimigo(int vida, int forca) {
         super.vida = vida;
         this.forca = forca;
+        
+        estadoAtualInimigo = EstadoInimigo.PARADO_ESQ;
     }
     
     /*
      * Método que adiciona a barra de vida após adicionar o Jogador no mundo
      */
+    
     public void addedToWorld(World world) {
         barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
         getWorld().addObject(barraVida, getX(), getY()-70);
@@ -44,6 +58,10 @@ public class Inimigo extends AtorPersonagem {
     public void act() {
         if (getWorld() != null) {
             gravidade();
+            
+            // super.act();
+            super.animar();
+            animInimigo();
             
             if (!modoPacifico) {
                 atacarJogadores();
@@ -69,21 +87,19 @@ public class Inimigo extends AtorPersonagem {
             int distanciaY = Math.abs(jogador.getY() - getY());
     
             if (distanciaX <= 20 && distanciaY <= 20) {
+                estadoAtualInimigo = EstadoInimigo.ATACANDO_ESQ;
                 jogador.receberAtaque(forca);
                 ativarEspera();
             } else {
                 if (jogador.getX() > getX()) {
+                    estadoAtualInimigo = EstadoInimigo.PARADO_DIR;
                     moverDireita();
                 } else if (jogador.getX() < getX()) {
+                    estadoAtualInimigo = EstadoInimigo.PARADO_ESQ;
                     moverEsquerda();
                 }
             }
         }
-        /*
-        if (vida <= 0) {
-            receberAtaque(12);
-            //removerDoMundo();
-        }*/
     }
     
     public void receberAtaque(int dano) {
@@ -106,13 +122,6 @@ public class Inimigo extends AtorPersonagem {
         }
         //System.out.println("Vida Inimigo: " + vida);
     }
-    /*
-    public void removerDoMundo() {
-        if (getWorld() != null) {
-            removidoDoMundo = true;
-            getWorld().removeObject(barraVida);
-        }
-    }*/
     
     /*
      * Movimento da barra de vida
@@ -164,6 +173,10 @@ public class Inimigo extends AtorPersonagem {
         }
     }
     
+    /*
+     * Localizar jogadores
+     */
+    
     public Jogador procurarJogadorMaisProximo() {
         CodeCrash world = (CodeCrash)getWorld();
         List<Jogador> jogadores = world.getObjects(Jogador.class);
@@ -184,6 +197,7 @@ public class Inimigo extends AtorPersonagem {
         return jogadorMaisProximo;
     }
     
+        // Pega as cordenadas do jogador mais próximo
     public double pegarDistanciaParaJogador(Jogador jogador) {
         if (jogador != null) {
             int jogadorX = jogador.getX();
@@ -203,6 +217,9 @@ public class Inimigo extends AtorPersonagem {
         }
     }
  
+    /*
+     * Gravidade e Plataforma
+     */
     
     public void gravidade() 
     {
@@ -222,6 +239,56 @@ public class Inimigo extends AtorPersonagem {
         return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
     
+    /*
+     * Maquina de Estado
+     */
+    public void animInimigo() {
+        switch (estadoAtualInimigo) {
+            case PARADO_ESQ:
+                estadoParadoEsq();
+                break;
+                
+            case PARADO_DIR:
+                estadoParadoDir();
+                break;
+                
+            case ATACANDO_ESQ:
+                estadoAtacandoEsq();
+                break;
+                
+            case ATACANDO_DIR:
+                estadoAtacandoDir();
+                break;
+        }
+    }
+    
+        // Animação do Inimigo Parado Direita
+    public void estadoParadoDir() {
+        super.setAnimacaoAtual(animParadoDir);
+        //super.setTempoEntreFrames(20);
+    }
+    
+        // Animação do Inimigo Parado Esquerda
+    public void estadoParadoEsq() {
+        super.setAnimacaoAtual(animParadoEsq);
+        //super.setTempoEntreFrames(20);
+    }
+    
+        // Animação do Inimigo Atacando Direita
+    public void estadoAtacandoDir() {
+        super.setAnimacaoAtual(animAtacandoDir);
+        super.setTempoEntreFrames(5);
+    }
+    
+        // Animação do Inimigo Atacando Esquerda
+    public void estadoAtacandoEsq() {
+        super.setAnimacaoAtual(animAtacandoEsq);
+        super.setTempoEntreFrames(10);
+    }
+    
+    /*
+     * Get e Set
+     */
     public void definirVelocidade(int velocidadeX){
         this.velocidadeX = velocidadeX;
     }
@@ -229,7 +296,6 @@ public class Inimigo extends AtorPersonagem {
     public void definirVida(int vida) {
         super.vida = vida;
         barraVida.redefinirValores(vida);
-        // barraVida = new BarraFlex(largura, altura, vida, vida, corVermelha);
     }
     
     public void definirForca(int forca) {

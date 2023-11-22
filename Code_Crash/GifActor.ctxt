@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=GifActor
+comment1.params=nomeArquivoGif\ tempoGif
+comment1.target=GifActor(java.lang.String,\ int)
+comment2.params=
+comment2.target=void\ act()
+comment3.params=tempoGif
+comment3.target=void\ definirTempoDoGif(int)
+comment4.params=
+comment4.target=int\ pegarTempoGifAtual()
+numComments=5

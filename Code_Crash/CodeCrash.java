@@ -1,12 +1,28 @@
 import greenfoot.*;
 import java.util.List;
+import java.util.Random;
 
 public class CodeCrash extends World {
+    /*
+     * Atributos do mundo
+     */
+    private int ladoDireito = getWidth();
+    private int altura = getHeight()-100;
+    
+    private boolean iniciarEtapa = false;
+    
     /*
      * Declarando os Jogadores 
      */ 
     Jogador jogador1 = new Jogador1();
     Jogador jogador2 = new Jogador2();
+    
+    /*
+     * Configurações da Horda
+     */
+    
+    private int tempoEsperaInvocarInimigo = 0;
+    private int totalInimigoInvocEmHorda = 0;
     
     /*
      * Configurações dos Inimigos
@@ -25,7 +41,7 @@ public class CodeCrash extends World {
     /*
      * Configuração das fases 
      */
-    private int faseAtual = 4;
+    private int faseAtual = 0;
     
     GreenfootImage fundoFase1 = new GreenfootImage("Back01.png");
     GreenfootImage fundoFase2 = new GreenfootImage("Back03.png");
@@ -37,23 +53,23 @@ public class CodeCrash extends World {
      */
     private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
     
-    private int ladoDireito = getWidth();
-    private int altura = getHeight()-100;
+    /*
+     * Configurar Gifs do mundo
+     */
     
-    private boolean iniciarEtapa = false;
-
-    // Corrigir
-    //private boolean estaEsquerda = false;
-    //private int tempoDeEspera = 0;
+    private String locDialogo1 = "Gifs/dialogo2_inicio-fase1.gif";
+    
     
     public CodeCrash() {
         super(1220, 600, 1);
         fase();
-        musicaDeFundo.setVolume(10);
+        musicaDeFundo.setVolume(50);
+        Greenfoot.start();
         //prepare();
     }
-
+    boolean jogoPausado = false;
     public void act() {
+        
         if (!musicaDeFundo.isPlaying()) {
             musicaDeFundo.play();
         }
@@ -83,24 +99,32 @@ public class CodeCrash extends World {
         inimigosMortos = 0;
         totalChefesInvocados = 0;
         chefeMorto = 0;
+        iniciarEtapa = false;
+    }
+    
+    public void imprimirFase() {
+        System.out.println("Fase atual: " + faseAtual);
     }
     
     public void fase() {
         switch (faseAtual) {
-            case 1:
-                // prepararFase1();
-                break;
-            case 2:
-                // prepararFase2();
+            case 0: 
+                Greenfoot.setWorld(new Intro());
                 break;
             case 3:
-                prepararFase3();
+                // prepararFase1();
                 break;
             case 4:
+                // prepararFase2();
+                break;
+            case 1:
+                prepararFase3();
+                break;
+            case 2:
                 prepararFase4();
                 break;
             default:
-                setBackground(fundoFase1);
+                teste();
                 break;
         }
     }
@@ -219,18 +243,6 @@ public class CodeCrash extends World {
         
         int numeroDeInimigos = contarInimigos();
         
-        Horda horda = new Horda(6, 6, new Inimigo[]{new Inimigo1(), new EspectroDoDesespero()}, new int[][]{{ladoDireito, altura}}, false);
-        addObject(horda, 0, 0);
-        
-        if (inimigosMortos < 25) {
-            horda.iniciarProximaEtapa();
-        }
-        /*
-        if (invocarInimigos && inimigosMortos < 25) {
-            horda.iniciarProximaEtapa();
-            invocarInimigos = false;
-        }*/
-        
         if (inimigosMortos >= 25 && totalChefesInvocados == 0 && numeroDeInimigos == 0) {
             tempoEspera--;
             if (tempoEspera == 0) {
@@ -245,25 +257,14 @@ public class CodeCrash extends World {
             //System.out.println("Passar De Fase " + faseAtual);
         }
     }
-    int invocouHorda = 0;
-    Horda horda;
     
     public void prepararFase4() {
         setBackground(fundoFase4);
         configurarJogadores();
         
         int numeroDeInimigos = contarInimigos();
+ 
         
-        if (invocouHorda < 1) {
-            horda = new Horda(12, 3, new Inimigo[]{new Inimigo1(), new EspectroDoDesespero()}, new int[][]{{ladoDireito, altura}}, false);
-            
-            invocouHorda+=1;
-        }
-        addObject(horda, 0, 0);
-        
-        if (inimigosMortos < 35) {
-            horda.iniciarProximaEtapa();
-        }
         
         if (inimigosMortos >= 35 && totalChefesInvocados == 0 && numeroDeInimigos == 0) {
             tempoEspera--;
@@ -292,5 +293,107 @@ public class CodeCrash extends World {
     public void chefeDerrotado() {
         this.chefeMorto++;
         System.out.println("Boss Mortos: " + chefeMorto);
+    }
+    
+    public void definirFaseAtual(int novaFase) 
+    {
+        this.faseAtual = novaFase;
+    }
+    
+        
+    
+    
+    public void gerenciarHorda(int qntTotalInvoc, int qntInvocPorEtapa, Inimigo[] tipoInimigo) {
+        
+        // Atenderá essa condição, se o total que eu quero invocar for maior que o total já invocado
+        if (qntTotalInvoc > totalInimigoInvocEmHorda) {
+        
+            // O tempo só será reduzido que ele for maior que 0
+            if (tempoEsperaInvocarInimigo > 0) tempoEsperaInvocarInimigo--;
+            
+            // Pega todos os inimigos do tipo Inimigo que estão presentes no mundo
+            
+             List<Inimigo> qntInimigoNoMundo = getObjects(Inimigo.class);
+            // Atenderá essa condição, se a quantidade de inimigos no mundo
+            // for menor que a quant que quero invocar na etapa
+            if (qntInvocPorEtapa > qntInimigoNoMundo.size()) {
+                horda(tipoInimigo);
+            }
+        }
+    }
+    
+    public void horda(Inimigo[] tipoInimigo) 
+    {
+        // Será executado quando o tempo chegar a 0;
+        if (tempoEsperaInvocarInimigo == 0) {
+            Random random = new Random();
+            
+            // Pega um indice aleatório, com base no tamanho da lista de tipos de inimigos
+            int indiceAleatorio = random.nextInt(tipoInimigo.length);
+            
+            addObject(tipoInimigo[indiceAleatorio], getWidth(), getHeight()-50);
+            
+            // Quando 1 inimigo é invocado, aumenta o total de inimigos invocados
+            totalInimigoInvocEmHorda += 1;
+            // Quando o inimigo for invocado, o intervalo entre as invocações voltará a ser 1s
+            tempoEsperaInvocarInimigo = 60;
+        }
+    }
+    boolean chefeInvocado = false;
+    public void invocarChefe(Chefe chefe, int totalInimigoAInvocar) {
+        
+        if (totalInimigoInvocEmHorda == totalInimigoAInvocar) {
+            List<Inimigo> qntInimigoNoMundo = getObjects(Inimigo.class);
+            List<Chefe> qntChefeNoMundo = getObjects(Chefe.class);
+            
+            if (qntInimigoNoMundo.isEmpty())
+            {
+                addObject(chefe, getWidth()-100, getHeight()-100);
+                chefeInvocado = true;
+            }
+            
+            if (chefeInvocado && qntChefeNoMundo.isEmpty()) {
+                System.out.println("Chefe foi derrotado");
+            }
+        }
+    }
+    
+    // Redefinir 'chefeInvocado' para false; TotalInimigoAInvocar = 0;
+    // totalInimigoInvocEmHorda = 0; 
+    
+    int tempoComeçarFase = 120;
+    boolean dialogo = false;
+    Inimigo[] tiposDeInimigo;
+    
+    public void teste() {
+        try {
+            final int totalInimigoAInvocar = 15;
+            
+            configurarJogadores();
+            setBackground(fundoFase1);
+            
+            if (tempoComeçarFase > 0) tempoComeçarFase--;
+            
+            if (tempoComeçarFase == 0) {
+                if (!dialogo) {
+                    GifActor gifDialogo1 = new GifActor(locDialogo1, 800);
+                    addObject(gifDialogo1, getWidth()/2, 65);
+                    
+                    dialogo = true;
+                }
+                
+                tiposDeInimigo = new Inimigo[] {
+                    new DroneMaluco(),
+                    new Inimigo1()
+                };
+                
+                gerenciarHorda(totalInimigoAInvocar, 3, tiposDeInimigo);
+            }
+            
+            invocarChefe(new Chefe3(), totalInimigoAInvocar);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

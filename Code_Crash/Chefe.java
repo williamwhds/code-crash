@@ -170,7 +170,7 @@ public class Chefe extends AtorPersonagem {
     /*
      * Pegar e Definir
      */
-        // Pegar vida do Chefe
+    
     public int pegarVida() {
         return vida;
     }

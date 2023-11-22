@@ -86,7 +86,8 @@ public class Jogador extends AtorPersonagem
         super.vida = 10;
     }
     
-    public void act() { 
+    public void act() {   
+        
         super.animar();
         animJogador();
         movimentos();
