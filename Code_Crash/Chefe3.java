@@ -26,11 +26,7 @@ public class Chefe3 extends Chefe
         super(vidaMax, forca);
         
         animParadoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_calmo", 6);
-        animParadoDir = super.espelharAnimacao(animParadoEsq);
-        animCloneEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_clone", 6);
-        animCloneDir = super.espelharAnimacao(animCloneEsq);
         animAtacandoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_atacando", 3);
-        animAtacandoDir = super.espelharAnimacao(animAtacandoEsq);
         
         super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
         

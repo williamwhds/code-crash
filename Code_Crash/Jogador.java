@@ -325,6 +325,13 @@ public class Jogador extends AtorPersonagem
         }
     }
     
+    public void reiniciarMunicao() {
+        recarregando = false;
+        tempoRecargaAtual = 180;
+        municao = 15;
+        barraRecarga.setValor(municao);
+    }
+    
     /*
      * Receber dano dos inimigos
      */

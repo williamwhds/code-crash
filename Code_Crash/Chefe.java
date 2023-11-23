@@ -98,18 +98,15 @@ public class Chefe extends AtorPersonagem {
             barraVida.diminuirValor(dano);
             super.efeitoSangue();            
             if (vida <= 0 ) {
-                CodeCrash world = (CodeCrash) getWorld();
-                world.chefeDerrotado();
+                //CodeCrash world = (CodeCrash) getWorld();
+                //world.chefeDerrotado();
                 
                 efeitoFumaca(10);
                 vida = 0;
                 getWorld().removeObject(barraVida);
                 getWorld().removeObject(this);
-                //getWorld().removeObject(this);
             }
-            //System.out.println("Ele está perdendo vida!: " + vida);
         }
-        //System.out.println("Vida Boss: " + super.vida);
     }
     
     public void ficarImune() {
@@ -263,5 +260,19 @@ public class Chefe extends AtorPersonagem {
     public void definirTempoDeEspera(int valorTempo) {
         this.valorTempo = valorTempo;
     } */
+    
+    public void gravidade() 
+    {
+        if (!noChao()) {
+            setLocation(getX(), getY() + 20);
+        }
+    }
+    
+    public boolean noChao() {
+        if (getOneIntersectingObject(Plataforma.class) != null) {
+            return true;
+        }
+        return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
+    }
     
 }

@@ -30,6 +30,8 @@ public class Intro extends World
     
     Label label;
     
+    private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
+    
     /*
      * Criando Personagens
      */
@@ -37,7 +39,7 @@ public class Intro extends World
     Jogador jogador1 = new Jogador1();
     Jogador jogador2 = new Jogador2();
     
-    Inimigo inimigoTeste = new Inimigo1();
+    Inimigo inimigoTeste = new Inimigo0();
     
     public Intro()
     {
@@ -50,12 +52,17 @@ public class Intro extends World
             label = new Label("'Espaço' para pular a Intro >>", 32);
             addObject(label, getWidth()-200, getHeight()-30);
             temAtoresNoMundo = true;
+            musicaDeFundo.setVolume(50);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
     public void act() {
+        if (!musicaDeFundo.isPlaying()) {
+            musicaDeFundo.play();
+        }
+        
         if (videoIntro) {
             gifAnimation(gifImg);
             tocarSomIntro();
@@ -133,7 +140,7 @@ public class Intro extends World
             removeObject(label);
             temAtoresNoMundo = false;
             // Libera memória assiciada;
-                gifImg.getCurrentImage().clear();
+            gifImg.getCurrentImage().clear();
         } catch (Exception e) {
             e.printStackTrace();
         }
