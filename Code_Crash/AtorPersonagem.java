@@ -14,6 +14,9 @@ public class AtorPersonagem extends ObjetoAnimado
     protected boolean estaImune = false;
     private int tempoImunidade;
     
+    
+    protected boolean modoPacifico = false;
+    
     /*
      * Torna o personagem imune
      */
@@ -40,6 +43,17 @@ public class AtorPersonagem extends ObjetoAnimado
     public void tornarVulneravel() {
         estaImune = false;
         tempoImunidade = 0;
+    }
+    
+    /*
+     * Ativar e Desativar Modo Pacifico
+     */   
+    public void ativarModoPacifico() {
+        this.modoPacifico = true;
+    }
+    
+    public void desativarModoPacifico() {
+        this.modoPacifico = false;
     }
     
     /*

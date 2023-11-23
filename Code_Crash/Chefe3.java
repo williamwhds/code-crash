@@ -51,7 +51,8 @@ public class Chefe3 extends Chefe
         super.verificarColisoesComJogadores();
         
         if (getX() > getWorld().getWidth() - 100) move(-5);
-        iniciarAtaque();
+        
+        if (!modoPacifico) iniciarAtaque();
     }
     
     public void definirTempoAtaque(int tempoAtaque) {

@@ -38,10 +38,12 @@ public class Chefe2 extends Chefe {
         
         super.gravidade();
         
-        if (estaParado) {
-            iniciarAtaque();
-        } else {
-            mover();
+        if (!modoPacifico) {
+            if (estaParado) {
+                iniciarAtaque();
+            } else {
+                mover();
+            }
         }
     }
     

@@ -9,8 +9,6 @@ public class CodeCrash extends World {
     private int ladoDireito = getWidth();
     private int altura = getHeight()-100;
     
-    private boolean iniciarEtapa = false;
-    
     /*
      * Declarando os Jogadores 
      */ 
@@ -25,29 +23,27 @@ public class CodeCrash extends World {
     private int totalInimigoInvocEmHorda = 0;
     
     boolean chefeInvocado = false;
-    int tempoComeçarFase = 120;
+    int tempoComecarFase = 120;
     boolean dialogo = false;
     Inimigo[] tiposDeInimigo;
     
+    boolean ativouModoPacifico = false;
     
     /*
      * Configurações dos Inimigos
      */
-    private int inimigosMortos = 0;
     private boolean invocarInimigos = true;
     
     /*
      * Configurações dos Chefes
      */   
-    private int totalChefesInvocados = 0;
-    private int chefeMorto = 0;
-    private int tempoEspera = 2*60;
-    //boolean chefeInvocado = false;
+    // private int tempoEspera = 2*60;
+    // boolean chefeInvocado = false;
     
     /*
      * Configuração das fases 
      */
-    private int faseAtual = 4;
+    private int faseAtual = 0;
     
     GreenfootImage fundoFase1 = new GreenfootImage("Back01.png");
     GreenfootImage fundoFase2 = new GreenfootImage("Back03.png");
@@ -63,26 +59,45 @@ public class CodeCrash extends World {
      * Configurar Gifs do mundo
      */
     
+     // Fase1
     private String locDialogo1 = "Gifs/dialogo2_inicio-fase1.gif";
+    private String locDialogo2 = "Gifs/dialogo3_chefe-fase1.gif";
+    private String locDialogo3 = "Gifs/dialogo4_final-fase1.gif";
     
+     // Fase 4
+    private String locDialogoInicialFase4 = "Gifs/dialogo1_inicio-fase4.gif";
+    private String locDialogoFinalFase4 = "Gifs/dialogo1_chefe-fase4.gif";
+    
+    // Intro Final 
+    
+    private String localIntroFinal = "Gifs/intro-final.gif";
+    
+    private boolean acabouOJogo = false;
+    
+    boolean introFinal = false;
+    GreenfootSound somIntroFinal;
+    
+    boolean musicaFase4 = false;
     
     public CodeCrash() {
         super(1220, 600, 1);
         fase();
-        musicaDeFundo.setVolume(50);
-        //Greenfoot.start();
+        acabouOJogo = false;
+        musicaFase4 = false;
+        musicaDeFundo.setVolume(70);
+        Greenfoot.start();
         //prepare();
     }
     
     public void act() {
         
-        if (!musicaDeFundo.isPlaying()) {
+        if (!musicaDeFundo.isPlaying() && !acabouOJogo) {
             musicaDeFundo.play();
         }
         
         if (!jogador1.estaVivo && !jogador2.estaVivo) {
             
-            addObject(new ImagemFundo("menu.png"), getWidth() / 2, getHeight() / 2);
+            addObject(new ImagemFundo("gameover.png"), getWidth() / 2, getHeight() / 2);
 
             if (Greenfoot.isKeyDown("r")) {
                 retroceder();
@@ -134,16 +149,15 @@ public class CodeCrash extends World {
     }
     
     public void redefinirConfiguracoes() {
-        tempoEspera = 2*60;
-        inimigosMortos = 0;
-        totalChefesInvocados = 0;
-        chefeMorto = 0;
-        iniciarEtapa = false;
-        
-        tempoComeçarFase = 120;
+        tempoComecarFase = 120;
         totalInimigoInvocEmHorda = 0;
         tempoEsperaInvocarInimigo = 0;
         chefeInvocado = false;
+        
+        dialogo = false;
+        dialogoParte2 = false;
+        dialogoParte3 = false;
+        ativouModoPacifico = false;
     }
     
     public void fase() {
@@ -164,119 +178,17 @@ public class CodeCrash extends World {
                 prepararFase4();
                 break;
             default:
-                teste();
+                introFinal();
                 break;
         }
     }
+    boolean dialogoParte2 = false;
+    boolean dialogoParte3 = false;
+    int tempoDoGif;
     
-    /*
-    public void prepararFase1() {
-        setBackground(fundoFase1);
-        configurarJogadores();
-        
-        inimigos = getObjects(Inimigo1.class);
-        int numDeInimigos = inimigos.size();
-        
-        if (numDeInimigos < 2 && totalInimigosInvocados < 20) {
-            Inimigo inimigo = new Inimigo1();
-            int posY = getHeight() / 2;
-            int posX;
-            if (estaEsquerda) {
-                posX = 0;
-                estaEsquerda = false;
-            } else {
-                posX = getWidth();
-                estaEsquerda = true;
-            }
-            addObject(inimigo, posX, posY);
-            totalInimigosInvocados++;
-        }
-        
-        if (numDeInimigos == 0 && totalInimigosInvocados == 20) {
-            if (getObjects(RabulGenius.class).isEmpty() && !chefeInvocado) {
-                
-                Chefe chefe = new RabulGenius();
-                addObject(chefe, getWidth(), 500);
-                chefeInvocado = true;
-                
-            } else {
-                List<RabulGenius> chefe = getObjects(RabulGenius.class);
-                List<DroneMaluco> drone = getObjects(DroneMaluco.class);
-                
-                if (chefeInvocado && chefe.isEmpty() && drone.isEmpty()) {
-                    passarFase();
-                    numDeInimigos = 0;
-                    totalInimigosInvocados = 0;
-                    chefeInvocado = false;
-                    fase();
-                }
-            }
-        }
+    public void definirTemporDoGif(int tempo) {
+        this.tempoDoGif = tempo;
     }
-    
-    public void prepararFase2() {
-        setBackground(fundoFase2);
-        configurarJogadores();
-    
-        int posY = getHeight() / 2;
-        int posX;
-        if (!estaEsquerda) {
-            posX = 0;
-            estaEsquerda = true;
-        } else {
-            posX = getWidth();
-        }
-    
-        int escolhaInimigo;
-        Inimigo inimigo = null;
-    
-        if (totalInimigosInvocados < 40) {
-            if (tempoDeEspera % (60 * 3) == 0) {
-    
-                for (int i = 0; i < 4; i++) {
-                    escolhaInimigo = Greenfoot.getRandomNumber(3);
-                    switch (escolhaInimigo) {
-                        case 0:
-                            inimigo = new Inimigo1();
-                            break;
-                        case 1:
-                            inimigo = new DroneMaluco();
-                            break;
-                        case 2:
-                            inimigo = new EspectroDoDesespero();
-                            break;
-                        default:
-                            // Lógica de erro, caso necessário
-                            break;
-                    }
-                    addObject(inimigo, posX, posY);
-                    totalInimigosInvocados++;
-                }
-            }
-            tempoDeEspera++;
-        }
-    
-        List<Inimigo> inimigos = getObjects(Inimigo.class);
-    
-        if (totalInimigosInvocados == 40 && inimigos.isEmpty() && !chefeInvocado) {
-            chefeInvocado = true;
-        }
-    
-        if (chefeInvocado && getObjects(Chefe2.class).isEmpty()) {
-            Chefe chefe = new Chefe2();
-            addObject(chefe, getWidth(), 530);
-        }
-    
-        List<Chefe2> chefe = getObjects(Chefe2.class);
-        List<EspectroDoDesespero> espectro = getObjects(EspectroDoDesespero.class);
-    
-        if (chefeInvocado && chefe.isEmpty() && espectro.isEmpty()) {
-            passarFase();
-            totalInimigosInvocados = 0;
-            chefeInvocado = false;
-            fase();
-        }
-    } */
     
     public void prepararFase1() {
         try {
@@ -285,11 +197,11 @@ public class CodeCrash extends World {
             configurarJogadores();
             setBackground(fundoFase1);
             
-            if (tempoComeçarFase > 0) tempoComeçarFase--;
+            if (tempoComecarFase > 0) tempoComecarFase--;
             
-            if (tempoComeçarFase == 0) {
+            if (tempoComecarFase == 0) {
                 if (!dialogo) {
-                    GifActor gifDialogo1 = new GifActor(locDialogo1, 800);
+                    GifActor gifDialogo1 = new GifActor(locDialogo1, 900);
                     addObject(gifDialogo1, getWidth()/2, 65);
                     
                     dialogo = true;
@@ -306,11 +218,70 @@ public class CodeCrash extends World {
             invocarChefe(new Chefe1(), totalInimigoAInvocar);
             
             if (chefeInvocado) {
+                
                 List<Chefe> qntChefeNoMundo = getObjects(Chefe.class);
                 
+                if (!dialogoParte2) {
+                    definirTemporDoGif(750);
+                    
+                    GifActor gifDialogo2 = new GifActor(locDialogo2, tempoDoGif);
+                    addObject(gifDialogo2, getWidth()/2, 65);
+                    
+                    dialogoParte2 = true;
+                }
+                
+                // Desativa as cemânicas dos personagens enquanto tiver o diálogo
+                if (tempoDoGif > 0) {
+                    tempoDoGif--;
+                    
+                    if (!ativouModoPacifico) {
+                        jogador1.ativarModoPacifico();
+                        jogador2.ativarModoPacifico();
+                        
+                        if (!qntChefeNoMundo.isEmpty()) {
+                            Chefe primeiroChefe = qntChefeNoMundo.get(0);
+                            primeiroChefe.ativarModoPacifico();
+                        }
+                        ativouModoPacifico = true;
+                    }
+                }
+                
+                // Ativa novamente as cemânicas dos personagens quando o diálogo acaba
+                if (tempoDoGif == 0 && ativouModoPacifico) {
+                    
+                    jogador1.desativarModoPacifico();
+                    jogador2.desativarModoPacifico();
+                    
+                    if (!qntChefeNoMundo.isEmpty()) {
+                        Chefe primeiroChefe = qntChefeNoMundo.get(0);
+                        primeiroChefe.desativarModoPacifico();
+                    }
+                    ativouModoPacifico = false;
+                }
+                
                 if (qntChefeNoMundo.isEmpty()) {
-                    redefinirConfiguracoes();
-                    passarFase();
+                    
+                    List<Inimigo> inimigoNoMundo = getObjects(Inimigo.class);
+                    if (!inimigoNoMundo.isEmpty()){
+                        for(int i=0; i < inimigoNoMundo.size(); i++) {
+                            inimigoNoMundo.get(i).removerDoMundo();
+                        }
+                    }
+                    
+                    
+                    if (!dialogoParte3) {
+                        definirTemporDoGif(1800);
+                        
+                        GifActor gifDialogo3 = new GifActor(locDialogo3, tempoDoGif);
+                        addObject(gifDialogo3, getWidth()/2, 65);
+                        
+                        dialogoParte3 = true;
+                    }
+                    
+                    if (tempoDoGif == 0 && dialogoParte3) 
+                    {
+                        passarFase();
+                    }
                 }
             }
         } catch (Exception e) {
@@ -325,9 +296,9 @@ public class CodeCrash extends World {
             configurarJogadores();
             setBackground(fundoFase3);
             
-            if (tempoComeçarFase > 0) tempoComeçarFase--;
+            if (tempoComecarFase > 0) tempoComecarFase--;
             
-            if (tempoComeçarFase == 0) {
+            if (tempoComecarFase == 0) {
                 /*
                 if (!dialogo) {
                     GifActor gifDialogo1 = new GifActor(locDialogo1, 800);
@@ -351,7 +322,6 @@ public class CodeCrash extends World {
                 List<Chefe> qntChefeNoMundo = getObjects(Chefe.class);
                 
                 if (qntChefeNoMundo.isEmpty()) {
-                    redefinirConfiguracoes();
                     passarFase();
                 }
             }
@@ -368,9 +338,9 @@ public class CodeCrash extends World {
             configurarJogadores();
             setBackground(fundoFase2);
             
-            if (tempoComeçarFase > 0) tempoComeçarFase--;
+            if (tempoComecarFase > 0) tempoComecarFase--;
             
-            if (tempoComeçarFase == 0) {
+            if (tempoComecarFase == 0) {
                 /*
                 if (!dialogo) {
                     GifActor gifDialogo1 = new GifActor(locDialogo1, 800);
@@ -395,7 +365,6 @@ public class CodeCrash extends World {
                 List<Chefe> qntChefeNoMundo = getObjects(Chefe.class);
                 
                 if (qntChefeNoMundo.isEmpty()) {
-                    redefinirConfiguracoes();
                     passarFase();
                 }
             }
@@ -405,43 +374,29 @@ public class CodeCrash extends World {
     }
     
     public void prepararFase4() {
-        /*
-        setBackground(fundoFase4);
-        configurarJogadores();
-        
-        int numeroDeInimigos = contarInimigos();
- 
-        
-        
-        if (inimigosMortos >= 35 && totalChefesInvocados == 0 && numeroDeInimigos == 0) {
-            tempoEspera--;
-            if (tempoEspera == 0) {
-                Chefe chefe4 = new Chefe4();
-                addObject(chefe4, getWidth()-100, getHeight() - 220);
-                totalChefesInvocados = 1;
-            }
-        }
-        
-        if (chefeMorto == 1) {
-            passarFase();
-        }*/
-        
         try {
-            final int totalInimigoAInvocar = 15;
+            final int totalInimigoAInvocar = 60;
+            if (!musicaFase4) {
+                musicaDeFundo.stop();
+                musicaDeFundo = new GreenfootSound("trilha-melancolica.mp3");
+                musicaDeFundo.setVolume(100);
+                musicaFase4 = true;
+            }
             
             configurarJogadores();
             setBackground(fundoFase4);
             
-            if (tempoComeçarFase > 0) tempoComeçarFase--;
+            if (tempoComecarFase > 0) tempoComecarFase--;
             
-            if (tempoComeçarFase == 0) {
-                /*
+            if (tempoComecarFase == 0) {
+                
                 if (!dialogo) {
-                    GifActor gifDialogo1 = new GifActor(locDialogo1, 800);
-                    addObject(gifDialogo1, getWidth()/2, 65);
+                    definirTemporDoGif(1600);
+                    GifActor gifDialogo = new GifActor(locDialogoInicialFase4, tempoDoGif);
+                    addObject(gifDialogo, getWidth()/2, 65);
                     
                     dialogo = true;
-                }*/
+                }
                 
                 tiposDeInimigo = new Inimigo[] {
                     new EspectroDoDesespero(),
@@ -450,7 +405,7 @@ public class CodeCrash extends World {
                     new Inimigo1()
                 };
                 
-                gerenciarHorda(totalInimigoAInvocar, 3, tiposDeInimigo);
+                gerenciarHorda(totalInimigoAInvocar, 12, tiposDeInimigo);
             }
             
             invocarChefe(new Chefe4(), totalInimigoAInvocar);
@@ -458,10 +413,52 @@ public class CodeCrash extends World {
             if (chefeInvocado) {
                 List<Chefe> qntChefeNoMundo = getObjects(Chefe.class);
                 
-                if (qntChefeNoMundo.isEmpty()) {
-                    redefinirConfiguracoes();
-                    passarFase();
+                // Desativa as cemânicas dos personagens enquanto tiver o diálogo
+                if (tempoDoGif > 0) {
+                    tempoDoGif--;
+                    
+                    if (!ativouModoPacifico) {
+                        jogador1.ativarModoPacifico();
+                        jogador2.ativarModoPacifico();
+                
+                        if (!qntChefeNoMundo.isEmpty()) {
+                            Chefe primeiroChefe = qntChefeNoMundo.get(0);
+                            primeiroChefe.ativarModoPacifico();
+                        }
+                        ativouModoPacifico = true;
+                    }
                 }
+                
+                // Ativa novamente as cemânicas dos personagens quando o diálogo acaba
+                if (tempoDoGif == 0 && ativouModoPacifico) {
+                    
+                    jogador1.desativarModoPacifico();
+                    jogador2.desativarModoPacifico();
+                    
+                    if (!qntChefeNoMundo.isEmpty()) {
+                        Chefe primeiroChefe = qntChefeNoMundo.get(0);
+                        primeiroChefe.desativarModoPacifico();
+                    }
+                    ativouModoPacifico = false;
+                }
+                
+                if (!dialogoParte2) {
+                    definirTemporDoGif(4100);
+                    
+                    GifActor gifDialogo2 = new GifActor(locDialogoFinalFase4, tempoDoGif);
+                    addObject(gifDialogo2, getWidth()/2, 65);
+                    
+                    dialogoParte2 = true;
+                }
+                
+                if (qntChefeNoMundo.isEmpty()) {
+                    
+                    List<Inimigo> inimigoNoMundo = getObjects(Inimigo.class);
+                    if (inimigoNoMundo.isEmpty()){
+                        passarFase();
+                    }
+                }
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -471,16 +468,6 @@ public class CodeCrash extends World {
     public int contarInimigos() {
         List<Inimigo> inimigos = getObjects(Inimigo.class);
         return inimigos.size();
-    }
-    
-    public void inimigoDerrotado() {
-        this.inimigosMortos++;
-        //System.out.println("Inimigos Mortos: " + inimigosMortos);
-    }
-    
-    public void chefeDerrotado() {
-        this.chefeMorto++;
-        // System.out.println("Boss Mortos: " + chefeMorto);
     }
     
     public void definirFaseAtual(int novaFase) 
@@ -538,8 +525,27 @@ public class CodeCrash extends World {
         }
     }
     
-    public void teste() {
+    public void introFinal() {
+        if (tempoDoGif > 0) tempoDoGif--;
         
+        if (!introFinal) {
+            definirTemporDoGif(5600);
+            GifActor gifIntroFinal = new GifActor(localIntroFinal, tempoDoGif);
+            addObject(gifIntroFinal, getWidth()/2, getHeight()/2);
+            introFinal = true;
+            
+            somIntroFinal = new GreenfootSound("trilhaSonora-suspense.mp3");
+            musicaDeFundo.stop();
+            somIntroFinal.play();
+            somIntroFinal.setVolume(100);
+        }
+        
+        if(tempoDoGif == 0) {
+            acabouOJogo = true;
+            musicaDeFundo.stop();
+            somIntroFinal.stop();
+            Greenfoot.setWorld(new Menu());
+        }
     }
     
     // Redefinir 'chefeInvocado' para false; TotalInimigoAInvocar = 0;

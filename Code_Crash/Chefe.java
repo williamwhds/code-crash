@@ -275,4 +275,12 @@ public class Chefe extends AtorPersonagem {
         return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
     
+    
+    public void ativarModoPacifico() {
+        super.ativarModoPacifico();
+    }
+    
+    public void desativarModoPacifico() {
+        super.desativarModoPacifico();
+    }
 }

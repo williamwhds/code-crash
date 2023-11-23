@@ -27,15 +27,16 @@ public class Chefe1 extends Chefe {
     }
     
     public void act() {
+        if (!modoPacifico) {
+            super.animar();
+            super.animChefe();
+            super.verificarColisoesComJogadores();
             
-        super.animar();
-        super.animChefe();
-        super.verificarColisoesComJogadores();
-        
-        if (estaParado) {
-            iniciarAtaque();
-        } else {
-            mover();
+            if (estaParado) {
+                iniciarAtaque();
+            } else {
+                mover();
+            }
         }
     }
     

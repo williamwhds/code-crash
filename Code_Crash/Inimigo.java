@@ -25,7 +25,6 @@ public class Inimigo extends AtorPersonagem {
     
     protected boolean removidoDoMundo = false;
     private boolean ativarEspera = false;
-    private boolean modoPacifico = false;
     //protected boolean noChao = false;
     
     /*
@@ -71,14 +70,6 @@ public class Inimigo extends AtorPersonagem {
         }
     }
     
-    public void ativarModoPacifico() {
-        this.modoPacifico = true;
-    }
-    
-    public void desativarModoPacifico() {
-        this.modoPacifico = false;
-    }
-    
     public void atacarJogadores() {
         Jogador jogador = procurarJogadorMaisProximo();
 
@@ -86,7 +77,7 @@ public class Inimigo extends AtorPersonagem {
             int distanciaX = Math.abs(jogador.getX() - getX());
             int distanciaY = Math.abs(jogador.getY() - getY());
     
-            if (distanciaX <= 20 && distanciaY <= 20) {
+            if (distanciaX <= 70 && distanciaY <= 70) {
                 estadoAtualInimigo = EstadoInimigo.ATACANDO_ESQ;
                 jogador.receberAtaque(forca);
                 ativarEspera();
@@ -107,20 +98,24 @@ public class Inimigo extends AtorPersonagem {
             super.receberAtaque(dano);
             barraVida.diminuirValor(dano);
             if (vida == 0) {
-              
+                /*
                 World mundo = getWorld();
                 if (mundo instanceof CodeCrash) {
                     CodeCrash world = (CodeCrash) getWorld();
                     world.inimigoDerrotado();
-                }
+                }*/
                 
-                getWorld().removeObject(barraVida);
-                getWorld().removeObject(this);
-                removidoDoMundo = true;
+                removerDoMundo();
                 //estaVivo = false;
             }
         }
         //System.out.println("Vida Inimigo: " + vida);
+    }
+    
+    public void removerDoMundo() {
+        getWorld().removeObject(barraVida);
+        getWorld().removeObject(this);
+        removidoDoMundo = true;
     }
     
     /*

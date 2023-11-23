@@ -10,6 +10,8 @@ public class Intro extends World
     private int count;
     private int tempoEspera;
     
+    private boolean irParaMundoCrash = false;
+    
     /*
      * Gif e Som da Intro
      */
@@ -30,7 +32,7 @@ public class Intro extends World
     
     Label label;
     
-    private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora.mp3");
+    private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora-suspense.mp3");
     
     /*
      * Criando Personagens
@@ -52,14 +54,17 @@ public class Intro extends World
             label = new Label("'Espaço' para pular a Intro >>", 32);
             addObject(label, getWidth()-200, getHeight()-30);
             temAtoresNoMundo = true;
-            musicaDeFundo.setVolume(50);
+            irParaMundoCrash = false;
+            
+            musicaDeFundo.stop();
+            musicaDeFundo.setVolume(80);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
     public void act() {
-        if (!musicaDeFundo.isPlaying()) {
+        if (!musicaDeFundo.isPlaying() && !videoIntro && !irParaMundoCrash) {
             musicaDeFundo.play();
         }
         
@@ -120,11 +125,13 @@ public class Intro extends World
             // Count 2 significa que invocou um inimigo, e esse inimigo foi morto.
             // Com isso, o mundo irá mudar para o Mundo Crash (Code Crash)
             if (count == 2) {
+                irParaMundoCrash = true;
                 CodeCrash mundoCrash = new CodeCrash();
                 
                 Greenfoot.delay(10);
                 count = 0;
                 
+                musicaDeFundo.stop();
                 mundoCrash.definirFaseAtual(1);
                 Greenfoot.setWorld(mundoCrash);
             }

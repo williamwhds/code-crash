@@ -2,7 +2,7 @@ import greenfoot.*;
 
 public class Inimigo1 extends Inimigo
 {   
-    private static int vida = 20;
+    private static int vida = 35;
     private static int forca = 1;
     private static int velocidadeX = 2;
     

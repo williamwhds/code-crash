@@ -32,7 +32,8 @@ public class Chefe4 extends Chefe
     {
         super.animar();
         super.animChefe();
-        iniciarAtaque();
+        
+        if (!modoPacifico) iniciarAtaque();
     }
     
     public void iniciarAtaque() {

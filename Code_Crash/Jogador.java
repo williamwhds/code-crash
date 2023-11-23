@@ -90,19 +90,22 @@ public class Jogador extends AtorPersonagem
         
         super.animar();
         animJogador();
-        movimentos();
-        pulos();
-        controlarTiros();
-        tempoRecarga();
+        
+        if (!modoPacifico) {
+            movimentos();
+            pulos();
+            controlarTiros();  
+            moverBarra(); 
+        } 
         
         gravidade();
         gerenciarImunidade();
-        moverBarra();
+        tempoRecarga();
         
         if (vida==0) {
             tirarDoMundo();
             encerrarSons();
-        }  
+        }
     }
     
     public void addedToWorld(World world, int posX) {
@@ -390,6 +393,14 @@ public class Jogador extends AtorPersonagem
         vida = 10;
         coracao.atualizarVida(vida);
         viver();
+    }
+    
+    public void ativarModoPacifico() {
+        super.ativarModoPacifico();
+    }
+    
+    public void desativarModoPacifico() {
+        super.desativarModoPacifico();
     }
     
     /*
