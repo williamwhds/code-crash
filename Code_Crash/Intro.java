@@ -3,70 +3,81 @@ import java.util.List;
 
 public class Intro extends World
 {
-    
-    private boolean videoIntro = true;
-    private boolean temAtoresNoMundo;
-    private boolean tocou = false;
-    private int count;
-    private int tempoEspera;
-    
-    private boolean irParaMundoCrash = false;
-    
     /*
-     * Gif e Som da Intro
+     * Intro
      */
-    
-    GifImage gifImg;
-    private String locGifIntro = "Gifs/CodeCrash-Intro.gif";
-    GreenfootSound somIntro = new GreenfootSound("audioIntro.mp3");
+    private boolean videoIntro;
+    private String locGifIntro;
+    private GifImage gifImg;
+    private GreenfootSound somIntro;
     
     /*
      * Gif da História (Diálogos)
      */
+    private String gifDialog1;
+    private boolean dialogo;
+    private int tempoGifAtual;
+    private GifActor gifActor;
+    private Label label;
+  
+    /*
+     * Verificação
+     */
+    private boolean irParaMundoCrash;
+    private boolean temAtoresNoMundo;
+    private boolean tocou;
+    private int count;
     
-    GifActor gifActor;
-    private String gifDialog1 = "Gifs/dialogo-inicial-fase_teste.gif";
-    
-    boolean dialogo = true;
-    int tempoGifAtual = 0;
-    
-    Label label;
-    
-    private GreenfootSound musicaDeFundo = new GreenfootSound("trilhaSonora-suspense.mp3");
+    /*
+     * Som
+     */
+    private GreenfootSound musicaDeFundo;
     
     /*
      * Criando Personagens
      */
+    private Jogador jogador1;
+    private Jogador jogador2;
+    private Inimigo inimigoTeste;
     
-    Jogador jogador1 = new Jogador1();
-    Jogador jogador2 = new Jogador2();
-    
-    Inimigo inimigoTeste = new Inimigo0();
-    
-    public Intro()
-    {
+    public Intro() {
         super(1220, 600, 1);
         
         try {
+            videoIntro = true;
+            locGifIntro = "Gifs/CodeCrash-Intro.gif";
+            somIntro = new GreenfootSound("audioIntro.mp3");
+            
+            dialogo = true;
+            tempoGifAtual = 0;
+            gifDialog1 = "Gifs/dialogo-inicial-fase_teste.gif";
+            
+            temAtoresNoMundo = true;
+            irParaMundoCrash = false;
+            irParaMundoCrash = false;
+            tocou = false;
+            
+            musicaDeFundo = new GreenfootSound("trilhaSonora-suspense.mp3");
+            
+            jogador1 = new Jogador1();
+            jogador2 = new Jogador2();
+            inimigoTeste = new Inimigo0();
+             
             gifImg = new GifImage(locGifIntro);
             setBackground(gifImg.getCurrentImage());
             
             label = new Label("'Espaço' para pular a Intro >>", 32);
             addObject(label, getWidth()-200, getHeight()-30);
-            temAtoresNoMundo = true;
-            irParaMundoCrash = false;
-            
+                    
             musicaDeFundo.stop();
             musicaDeFundo.setVolume(80);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
     public void act() {
-        if (!musicaDeFundo.isPlaying() && !videoIntro && !irParaMundoCrash) {
-            musicaDeFundo.play();
-        }
         
         if (videoIntro) {
             gifAnimation(gifImg);
@@ -80,6 +91,11 @@ public class Intro extends World
         
         if (!videoIntro) {
             treinoInicial();
+            dialogo();
+            
+            if (!musicaDeFundo.isPlaying() && !irParaMundoCrash) {
+                musicaDeFundo.play();
+            }
         }
     }
     
@@ -95,16 +111,6 @@ public class Intro extends World
                 addObject(jogador2, 170, 535);
                 
                 inimigoTeste.ativarModoPacifico();
-            }
-            
-            if (dialogo) {
-                gifActor = new GifActor(gifDialog1, 1900); // Esse número equivale a 31.1seg
-                addObject(gifActor, getWidth()/2, 65);
-                dialogo = false;
-            }
-            
-            if(gifActor != null) {
-                tempoGifAtual = gifActor.pegarTempoGifAtual();
             }
             
             // Se não tiver inimigo no mundo, adiciona e redefine a força e a vida. Também adiciona uma Label
@@ -139,6 +145,14 @@ public class Intro extends World
             setBackground("Back01.png");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    public void dialogo() {
+        if (dialogo) {
+            gifActor = new GifActor(gifDialog1, 1900);
+            addObject(gifActor, getWidth()/2, 65);
+            dialogo = false;
         }
     }
     

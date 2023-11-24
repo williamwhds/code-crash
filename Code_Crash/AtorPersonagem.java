@@ -6,16 +6,24 @@ public class AtorPersonagem extends ObjetoAnimado
      * Configura Vida
      */
     protected int vida;
-    protected boolean estaVivo = true;
+    protected boolean estaVivo;
     
     /*
      * Imunidade
      */
-    protected boolean estaImune = false;
+    protected boolean estaImune;
     private int tempoImunidade;
     
+    /*
+     * Configura pacificidade do AtorPersonagem
+     */
+    protected boolean modoPacifico;
     
-    protected boolean modoPacifico = false;
+    public AtorPersonagem() {
+        estaVivo = true;
+        estaImune = false;
+        modoPacifico = false;
+    }
     
     /*
      * Torna o personagem imune

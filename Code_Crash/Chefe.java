@@ -7,38 +7,28 @@ public class Chefe extends AtorPersonagem {
      * Configura Barra de Vida
      */
     protected BarraFlex barraVida;
-    protected int largura = 1000;
-    protected int altura = 30;
-    protected Color corVermelha = Color.RED;
+    protected int largura;
+    protected int altura;
+    protected Color corVermelha;
     
     /*
-     * Configura Caracteristicas Físicas
+     * Força
      */
-    private int velocidadeX;
     private int forca;
     
     /*
      * Configurações Gerais
      */
-    private int ladoDireito = 1220-100;
-    private int ladoEsquerdo = 100;
-    protected boolean estaNaEsquerda = false;
+    private int ladoDireito;
+    private int ladoEsquerdo;
+    protected boolean estaNaEsquerda;
     
     /*
-     * REMOVER
+     * Tempo
      */
     protected int tempoEspera;
     protected int tempoAtaque;
-    
-    
     private int valorTempo;
-    private int tempoDeEspera;
-    private int distanciaBordaX = 130;
-    private int invocacoes = 0;
-    private int qnt;
-    private int qntChancesInvocarInimigos;
-    //private boolean ladoEsquerdo = false;
-    private boolean navegando = false;
     
     /*
      * Configurar Animação
@@ -55,6 +45,14 @@ public class Chefe extends AtorPersonagem {
     public Chefe(int vida, int forca) {
         super.vida = vida;
         this.forca = forca;
+        
+        largura = 1000;
+        altura = 30;
+        corVermelha = Color.RED;
+        
+        ladoDireito = 1220-100;
+        ladoEsquerdo = 100;
+        estaNaEsquerda = false;
     }
     
     /*
@@ -184,82 +182,11 @@ public class Chefe extends AtorPersonagem {
         this.estaNaEsquerda = estaNaEsquerda;
     }
     
-    // Retorna True se tempo chegar a 0
-    public boolean tempoEspera() {
-        this.tempoEspera-=1;
-        if (tempoEspera<0) tempoEspera=0;
-        
-        return tempoEspera==0;
-    }
-    
     // Retorna True enquanto o tempo for maior que 0
     public boolean tempoAtaque() {
         tempoAtaque-=1;
         return tempoAtaque > 0;
     }
-    
-        
-    /*
-    
-    public void definirValorTempo() {
-        this.valorTempo = valorTempo;
-    }
-    
-    public void controlarInvocacao(int qnt, int qntChancesInvocarInimigos) {
-        this.qnt = qnt;
-        this.qntChancesInvocarInimigos = qntChancesInvocarInimigos;
-    }
-
-    public void acao() {
-        if (tempoDeEspera > 0) { // Se for > 0, significa que ele está parado
-            tempoDeEspera--;
-            navegando = false;
-            
-            if (invocacoes < qnt) {
-                invocarInimigo();
-                invocacoes++;
-            }
-            
-        } else {
-            invocacoes = 0;
-        }
-
-        if (tempoDeEspera <= 0) {
-            navegando = true;
-            if (ladoEsquerdo) {
-                moverParaDireita();
-            } else {
-                moverParaEsquerda();
-            }
-        }
-    }
-    
-    public void moverParaEsquerda() {
-        if (getX() > distanciaBordaX) {
-            move(-velocidadeX);
-        } else {
-            ladoEsquerdo = true;
-            tempoDeEspera = valorTempo;
-            //setRotation(180);
-        }
-    }
-
-    public void moverParaDireita() {
-        if (getX() < (getWorld().getWidth()) - distanciaBordaX) {
-            move(velocidadeX);
-        } else {
-            ladoEsquerdo = false;
-            tempoDeEspera = valorTempo;
-        }
-    } 
-    
-    public void definirVelocidade(int velocidadeX) {
-        this.velocidadeX = velocidadeX;
-    }
-
-    public void definirTempoDeEspera(int valorTempo) {
-        this.valorTempo = valorTempo;
-    } */
     
     public void gravidade() 
     {
@@ -274,7 +201,6 @@ public class Chefe extends AtorPersonagem {
         }
         return getY() >= getWorld().getHeight() - getImage().getHeight() / 2;
     }
-    
     
     public void ativarModoPacifico() {
         super.ativarModoPacifico();

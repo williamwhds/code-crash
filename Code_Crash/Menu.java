@@ -3,12 +3,16 @@ import greenfoot.*;
 public class Menu extends World
 {
     private GreenfootSound somConfirmar;
-    private GreenfootSound somMenu = new GreenfootSound("trilhaSonora-Menu.mp3");
-    private boolean iniciou = false;
+    private GreenfootSound somMenu;
+    private boolean iniciou;
     
     public Menu()
     {    
         super(1220, 600, 1); 
+        
+        somMenu = new GreenfootSound("trilhaSonora-Menu.mp3");
+        iniciou = false;
+        
         setBackground("menu-start.png");
         somMenu.setVolume(70);
         iniciou = false;
@@ -16,9 +20,6 @@ public class Menu extends World
     
     public void act() {
         if (Greenfoot.isKeyDown("enter")) {
-            somConfirmar = new GreenfootSound("somConfirmar.mp3");
-            somConfirmar.play();
-            iniciou = true;
             começarJogo();
         }
         
@@ -28,6 +29,10 @@ public class Menu extends World
     }
     
     public void começarJogo() {
+        somConfirmar = new GreenfootSound("somConfirmar.mp3");
+        somConfirmar.play();
+        iniciou = true;
+        
         setBackground("menu.png");
         Greenfoot.delay(10);
         Greenfoot.setWorld(new Intro());

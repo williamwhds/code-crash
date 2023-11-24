@@ -22,7 +22,6 @@ public class Chefe4 extends Chefe
         animAtacandoEsq = super.gerarAnimacao("Chefes/Chefe4/chefe4_atacando", 6);
         
         super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
-        
         super.ficarImune();
 
         this.tempoEspera = tempoImune;
@@ -116,9 +115,4 @@ public class Chefe4 extends Chefe
             invocados = 0;
         }
     }
-    /*
-    public boolean existemInimigosNoMundo() {
-        List<Inimigo> inimigosNoMundo = getWorld().getObjects(Inimigo.class);
-        return !inimigosNoMundo.isEmpty();
-    }*/
 }
