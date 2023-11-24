@@ -18,8 +18,8 @@ public class Jogador extends AtorPersonagem
     /*
      * Mecânicas de movimentos
      */
-    private double velocidadeX = 0;
-    private double velocidadeY = 0;
+    private double velocidadeX;
+    private double velocidadeY;
     private double forcaSalto = 13;
     
     /*
@@ -38,17 +38,17 @@ public class Jogador extends AtorPersonagem
     /*
      * Configuração Barra de Recarga
      */
-    int largura = 100;
-    int altura = 10;
-    BarraFlex barraRecarga;
+    protected int largura = 100;
+    protected int altura = 10;
+    protected BarraFlex barraRecarga;
     
     /*
      * Mecânica de verificação
      */
-    private boolean estaPulando = false;
-    private boolean movendo_Esquerda = false;
-    private boolean recarregando = false;
-    private boolean atirou = false;
+    private boolean estaPulando;
+    private boolean movendo_Esquerda;
+    private boolean recarregando;
+    private boolean atirou;
     
     /*
      * Armazena as animações
@@ -71,37 +71,54 @@ public class Jogador extends AtorPersonagem
     /*
      * Configuração da máquina de estado
      */
-    private EstadoJogador estadoAtual = EstadoJogador.PARADO_DIR;
+    private EstadoJogador estadoAtual;
     
     /*
      * Som
      */
-    GreenfootSound somDisparo = new GreenfootSound("Projetil.mp3");
-    GreenfootSound somRecarregando = new GreenfootSound("Recarregando.mp3");
-    GreenfootSound somDanoGlitch = new GreenfootSound("dano_glitch.mp3");
-    GreenfootSound somRemover = new GreenfootSound("remover.mp3");
-    GreenfootSound somPulo = new GreenfootSound("Pulo.mp3");
+    GreenfootSound somDisparo;
+    GreenfootSound somRecarregando;
+    GreenfootSound somDanoGlitch;
+    GreenfootSound somRemover;
+    GreenfootSound somPulo;
     
     public Jogador() {
         super.vida = 10;
+        
+        estaPulando = false;
+        movendo_Esquerda = false;
+        recarregando = false;
+        atirou = false;
+        
+        estadoAtual = EstadoJogador.PARADO_DIR;
+        
+        somDisparo = new GreenfootSound("Projetil.mp3");
+        somRecarregando = new GreenfootSound("Recarregando.mp3");
+        somDanoGlitch = new GreenfootSound("dano_glitch.mp3");
+        somRemover = new GreenfootSound("remover.mp3");
+        somPulo = new GreenfootSound("Pulo.mp3");
     }
     
-    public void act() { 
+    public void act() {   
+        
         super.animar();
         animJogador();
-        movimentos();
-        pulos();
-        controlarTiros();
-        tempoRecarga();
+        
+        if (!modoPacifico) {
+            movimentos();
+            pulos();
+            controlarTiros();  
+            moverBarra(); 
+        } 
         
         gravidade();
         gerenciarImunidade();
-        moverBarra();
+        tempoRecarga();
         
         if (vida==0) {
             tirarDoMundo();
             encerrarSons();
-        }  
+        }
     }
     
     public void addedToWorld(World world, int posX) {
@@ -115,7 +132,6 @@ public class Jogador extends AtorPersonagem
     public void moverBarra() {
         barraRecarga.setLocation(getX(), getY()-70);
     }
-
     
     /*
      * Configuração de Teclas
@@ -208,45 +224,6 @@ public class Jogador extends AtorPersonagem
         }
     }
     
-    // Configura o tamanho da animação da fumaça
-    public void efeitoFumaca(int escala) {
-        Efeito fumaca = new EfeitoFumaca();
-        
-        GreenfootImage[] animFumaca;
-        animFumaca = fumaca.gerarAnimacao("Efeitos/Fumaca/fumaca", 8, escala);
-        fumaca.setAnimacaoAtual(animFumaca);
-        
-        getWorld().addObject(fumaca, getX(), getY()+15);
-    }
-    
-    /*
-     * Estabelece a física de queda do personagem no mundo
-     */
-    public void gravidade() {
-        if (naPlataforma()) {
-            // System.out.println("Estou na plataforma");
-            estaPulando = false;
-        }
-        
-        if (!naPlataforma() && !estaPulando && getY() < getWorld().getHeight() - getImage().getHeight() / 2) {
-            
-            velocidadeY += 0.5;
-            setLocation(getX(), getY() + (int) velocidadeY);
-            
-            if (getY() >= getWorld().getHeight() - getImage().getHeight() / 2) {
-                velocidadeY = 0;
-                setLocation(getX(), getWorld().getHeight() - getImage().getHeight() / 2);
-            }
-        }
-    }
-    
-    public boolean naPlataforma() {
-        if (getOneIntersectingObject(Plataforma.class) != null) {
-            return true;
-        }
-        return false;
-    }
-    
     /*
      * Método de controle de tiros
      */
@@ -324,6 +301,13 @@ public class Jogador extends AtorPersonagem
         }
     }
     
+    public void reiniciarMunicao() {
+        recarregando = false;
+        tempoRecargaAtual = 180;
+        municao = 15;
+        barraRecarga.setValor(municao);
+    }
+    
     /*
      * Receber dano dos inimigos
      */
@@ -346,6 +330,33 @@ public class Jogador extends AtorPersonagem
             estadoAtual = EstadoJogador.DANO;
             super.gerenciarImunidade();
         }
+    }
+    
+    /*
+     * Estabelece a física de queda do personagem no mundo
+     */
+    public void gravidade() {
+        if (naPlataforma()) {
+            estaPulando = false;
+        }
+        
+        if (!naPlataforma() && !estaPulando && getY() < getWorld().getHeight() - getImage().getHeight() / 2) {
+            
+            velocidadeY += 0.5;
+            setLocation(getX(), getY() + (int) velocidadeY);
+            
+            if (getY() >= getWorld().getHeight() - getImage().getHeight() / 2) {
+                velocidadeY = 0;
+                setLocation(getX(), getWorld().getHeight() - getImage().getHeight() / 2);
+            }
+        }
+    }
+    
+    public boolean naPlataforma() {
+        if (getOneIntersectingObject(Plataforma.class) != null) {
+            return true;
+        }
+        return false;
     }
     
     /*
@@ -382,6 +393,14 @@ public class Jogador extends AtorPersonagem
         vida = 10;
         coracao.atualizarVida(vida);
         viver();
+    }
+    
+    public void ativarModoPacifico() {
+        super.ativarModoPacifico();
+    }
+    
+    public void desativarModoPacifico() {
+        super.desativarModoPacifico();
     }
     
     /*
@@ -496,6 +515,5 @@ public class Jogador extends AtorPersonagem
         somRecarregando.stop();
         somDanoGlitch.stop();
         somPulo.stop();
-        //somRemover.stop();
     }
 }

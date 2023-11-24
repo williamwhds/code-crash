@@ -3,98 +3,188 @@ import java.util.List;
 
 public class Intro extends World
 {
+    /*
+     * Intro
+     */
+    private boolean videoIntro;
+    private String locGifIntro;
+    private GifImage gifImg;
+    private GreenfootSound somIntro;
     
-    private boolean videoIntro = true;
+    /*
+     * Gif da História (Diálogos)
+     */
+    private String gifDialog1;
+    private boolean dialogo;
+    private int tempoGifAtual;
+    private GifActor gifActor;
+    private Label label;
+  
+    /*
+     * Verificação
+     */
+    private boolean irParaMundoCrash;
     private boolean temAtoresNoMundo;
+    private boolean tocou;
+    private int count;
     
-    GifImage gifImg = new GifImage("Gifs/CodeCrash-Intro.gif");
-    GreenfootSound somIntro = new GreenfootSound("audioIntro.mp3");
+    /*
+     * Som
+     */
+    private GreenfootSound musicaDeFundo;
     
-    boolean tocou = false;
+    /*
+     * Criando Personagens
+     */
+    private Jogador jogador1;
+    private Jogador jogador2;
+    private Inimigo inimigoTeste;
     
-    Label label;
-    
-    Jogador jogador1 = new Jogador1();
-    Jogador jogador2 = new Jogador2();
-    
-    Inimigo inimigoTeste = new Inimigo1();
-    
-    public Intro()
-    {
+    public Intro() {
         super(1220, 600, 1);
-        setBackground(gifImg.getCurrentImage());
         
-        label = new Label("'Espaço' para pular a Intro >>", 32);
-        addObject(label, getWidth()-200, getHeight()-30);
-        temAtoresNoMundo = true;
+        try {
+            videoIntro = true;
+            locGifIntro = "Gifs/CodeCrash-Intro.gif";
+            somIntro = new GreenfootSound("audioIntro.mp3");
+            
+            dialogo = true;
+            tempoGifAtual = 0;
+            gifDialog1 = "Gifs/dialogo-inicial-fase_teste.gif";
+            
+            temAtoresNoMundo = true;
+            irParaMundoCrash = false;
+            irParaMundoCrash = false;
+            tocou = false;
+            
+            musicaDeFundo = new GreenfootSound("trilhaSonora-suspense.mp3");
+            
+            jogador1 = new Jogador1();
+            jogador2 = new Jogador2();
+            inimigoTeste = new Inimigo0();
+             
+            gifImg = new GifImage(locGifIntro);
+            setBackground(gifImg.getCurrentImage());
+            
+            label = new Label("'Espaço' para pular a Intro >>", 32);
+            addObject(label, getWidth()-200, getHeight()-30);
+                    
+            musicaDeFundo.stop();
+            musicaDeFundo.setVolume(80);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public void act() {
+        
         if (videoIntro) {
-            gifAnimation();
+            gifAnimation(gifImg);
             tocarSomIntro();
         }
         
         if ((!somIntro.isPlaying() && tocou) || Greenfoot.isKeyDown("space")) {
             somIntro.stop();
-            
             videoIntro = false;
         }
         
         if (!videoIntro) {
             treinoInicial();
-        }
-    }
-    int count;
-    int tempoEspera;
-    
-    public void treinoInicial() {
-        List<Inimigo> inimigoNoMundo = getObjects(Inimigo.class);
-        // Remove os atores do mundo, antes de começar a fase de treino;
-        if (temAtoresNoMundo)
-        {
-            removerTudoDoMundo();
-            addObject(jogador1, 65, 535);
-            addObject(jogador2, 170, 535);
+            dialogo();
             
-            inimigoTeste.ativarModoPacifico();
-        }
-        
-        if (inimigoNoMundo.isEmpty()){
-            count+=1;
-            
-            if (count<2) {
-                label = new Label("Ele não é mais o mesmo. >:]", 35);
-                addObject(inimigoTeste, getWidth()-100, getHeight()-50);  
-                
-                inimigoTeste.definirVida(100);
-                inimigoTeste.definirForca(0);
-                
-                addObject(label, getWidth()/2, getHeight()/2);
+            if (!musicaDeFundo.isPlaying() && !irParaMundoCrash) {
+                musicaDeFundo.play();
             }
         }
-        
-        if (count == 2) {
-            Greenfoot.stop();
+    }
+    
+    public void treinoInicial() {
+        try {
+            List<Inimigo> inimigoNoMundo = getObjects(Inimigo.class);
+            
+            // Irá limpar tudo da tela antes que adicionar os jogadores e o Inimigo teste.
+            if (temAtoresNoMundo)
+            {
+                removerTudoDoMundo();
+                addObject(jogador1, 65, 535);
+                addObject(jogador2, 170, 535);
+                
+                inimigoTeste.ativarModoPacifico();
+            }
+            
+            // Se não tiver inimigo no mundo, adiciona e redefine a força e a vida. Também adiciona uma Label
+            if (inimigoNoMundo.isEmpty() && tempoGifAtual < 1000){
+                count+=1;
+                
+                if (count<2) {
+                    label = new Label("Ataque!", 50);
+                    addObject(inimigoTeste, getWidth()-100, getHeight()-100);  
+                    
+                    inimigoTeste.definirVida(100);
+                    inimigoTeste.definirForca(0);
+                    
+                    addObject(label, getWidth()/2, getHeight()/2);
+                }
+            }
+            
+            // Count 2 significa que invocou um inimigo, e esse inimigo foi morto.
+            // Com isso, o mundo irá mudar para o Mundo Crash (Code Crash)
+            if (count == 2) {
+                irParaMundoCrash = true;
+                CodeCrash mundoCrash = new CodeCrash();
+                
+                Greenfoot.delay(10);
+                count = 0;
+                
+                musicaDeFundo.stop();
+                mundoCrash.definirFaseAtual(1);
+                Greenfoot.setWorld(mundoCrash);
+            }
+            
+            setBackground("Back01.png");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        setBackground("Back01.png");
+    }
+    
+    public void dialogo() {
+        if (dialogo) {
+            gifActor = new GifActor(gifDialog1, 1900);
+            addObject(gifActor, getWidth()/2, 65);
+            dialogo = false;
+        }
     }
     
     public void removerTudoDoMundo() {
-        removeObject(label);
-        temAtoresNoMundo = false;
+        try {
+            removeObject(label);
+            temAtoresNoMundo = false;
+            // Libera memória assiciada;
+            gifImg.getCurrentImage().clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void tocarSomIntro() {
-        if (!somIntro.isPlaying() && !tocou) {
-            somIntro.play();
-            tocou = true;
+        try {
+            if (!somIntro.isPlaying() && !tocou) {
+                somIntro.play();
+                tocou = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
-    public void gifAnimation()
+    public void gifAnimation(GifImage gifImage)
     {
-        setBackground(gifImg.getCurrentImage());
+        try {
+            setBackground(gifImage.getCurrentImage());
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 } 

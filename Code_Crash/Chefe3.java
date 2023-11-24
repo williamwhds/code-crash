@@ -2,8 +2,6 @@ import greenfoot.*;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Chefe3 extends Chefe
 {
@@ -17,20 +15,13 @@ public class Chefe3 extends Chefe
     private int tempoAntesRaio = 2*60;
     private int intervalo = 100;
     
-    private Efeito clone;
-    private int qntClone;
-    
     private ArrayList<Integer> posY;
     
     public Chefe3() {
         super(vidaMax, forca);
         
         animParadoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_calmo", 6);
-        animParadoDir = super.espelharAnimacao(animParadoEsq);
-        animCloneEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_clone", 6);
-        animCloneDir = super.espelharAnimacao(animCloneEsq);
         animAtacandoEsq = super.gerarAnimacao("Chefes/Chefe3/chefe3_atacando", 3);
-        animAtacandoDir = super.espelharAnimacao(animAtacandoEsq);
         
         super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
         
@@ -55,7 +46,8 @@ public class Chefe3 extends Chefe
         super.verificarColisoesComJogadores();
         
         if (getX() > getWorld().getWidth() - 100) move(-5);
-        iniciarAtaque();
+        
+        if (!modoPacifico) iniciarAtaque();
     }
     
     public void definirTempoAtaque(int tempoAtaque) {
@@ -74,12 +66,10 @@ public class Chefe3 extends Chefe
             if (tempoAtaque == 0) {
                 super.tornarVulneravel();
                 super.estadoChefeAtual = EstadoChefe.PARADO_ESQ;
-                //invocarClone(animCloneDir, pegarLadoEsquerdo());
                 tempoAtaque = 1;  
             } 
             
             if (aguardarAtaque == (3*60)) {
-                //removerClone();
                 aguardarAtaque = 0;
                 tempoAtaque = 1000;
                 tempoAntesRaio = 2*60;
@@ -151,18 +141,4 @@ public class Chefe3 extends Chefe
         raio.remover();
     }
     
-    public void invocarClone(GreenfootImage[] animPosicaoAtual, int ladoAtual) {
-        if (qntClone == 0) {
-            clone = new EfeitoClonagem(animPosicaoAtual);
-            getWorld().addObject(clone, ladoAtual, getY());
-            qntClone += 1;
-        }
-    }
-    
-    public void removerClone() {
-        if (getWorld() != null && clone != null) {            
-            getWorld().removeObject(clone);
-            qntClone = 0;
-        }
-    }
 }

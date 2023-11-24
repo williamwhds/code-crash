@@ -4,10 +4,11 @@ import java.util.List;
 public class EfeitoRaio extends Efeito
 {
     private GreenfootImage[] raio;
-    GreenfootSound somEletricidade = new GreenfootSound("Eletricidade.mp3");
+    GreenfootSound somEletricidade;
     
     public EfeitoRaio() {
         raio = super.gerarAnimacao("Efeitos/Raio/raio", 4);
+        somEletricidade = new GreenfootSound("Eletricidade.mp3");
         setAnimacaoAtual(raio);
     }
     
@@ -21,20 +22,15 @@ public class EfeitoRaio extends Efeito
     }
     
     public void danoAoJogador() {
-        //List<Jogador1> jogador1 = getWorld().getObjects(Jogador1.class);
-        //List<Jogador2> jogador2 = getWorld().getObjects(Jogador2.class);
-        
-        //Jogador jogador = (Jogador) getOneIntersectingObject(Jogador.class);
-        
         Jogador jogador1 = (Jogador) getOneIntersectingObject(Jogador1.class);
         Jogador jogador2 = (Jogador) getOneIntersectingObject(Jogador2.class);
         
         if (jogador1 != null && getWorld() != null) {
-            jogador1.receberAtaque(2);
+            jogador1.receberAtaque(1);
         }
         
         if (jogador2 != null && getWorld() != null) {
-            jogador2.receberAtaque(2);
+            jogador2.receberAtaque(1);
         }
     }
     
