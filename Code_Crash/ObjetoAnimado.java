@@ -1,5 +1,22 @@
 import greenfoot.*;
 
+/*
+ *  ObjetoAnimado é usado para criar objetos que possuem animações.
+ *  É possível gerar animações a partir de imagens, e também espelhar
+ *  caso o objeto precise virar para o outro lado.
+ * 
+ *  Para usar, crie uma classe que herda de ObjetoAnimado, e crie
+ *  uma array de GreenfootImage[] para cada animação que o objeto
+ *  terá. Depois, chame o método gerarAnimacao() para cada array,
+ *  passando o nome da imagem e o número de imagens que compõem a
+ *  animação. Por fim, chame o método setAnimacaoAtual() para definir
+ *  qual animação será usada inicialmente.
+ * 
+ *  Para animar, chame o método animar() no método act() da classe.
+ * 
+ *  É possível mudar a velocidade da animação usando o método setTempoEntreFrames().
+ */
+
 public class ObjetoAnimado extends Actor {
     // Declarar animações antes de usar gerarAnimacao().
     // Ex.: private GreenfootImage[] animacaoAndar;

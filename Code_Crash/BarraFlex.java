@@ -1,5 +1,11 @@
 import greenfoot.*; 
 
+/*
+ *  BarraFlex é uma barra que pode ser usada para várias coisas,
+ *  como barras de vida, progresso de objetivo, etc. É possível
+ *  definir o valor máximo e atual, e a cor da barra.
+ */
+
 public class BarraFlex extends Actor {
     private int barraLargura, barraAltura, valorMax, valorAtual;
     

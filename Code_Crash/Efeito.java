@@ -1,5 +1,11 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
+/*
+ *  Efeito é uma classe que representa um efeito visual que pode ser adicionado ao mundo.
+ *  É possível definir uma animação para o efeito, e ele será removido automaticamente
+ *  após a animação terminar.
+ */
+
 public class Efeito extends ObjetoAnimado
 {
     public void act()
